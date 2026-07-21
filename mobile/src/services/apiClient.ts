@@ -25,7 +25,7 @@ const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 
 // Default configuration
-const DEFAULT_BASE_URL = 'http://localhost:8000';
+const DEFAULT_BASE_URL = 'http://192.168.1.193:8000';
 
 /**
  * Callback invoked when the session is invalid (refresh fails).

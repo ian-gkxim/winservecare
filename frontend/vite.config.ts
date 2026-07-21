@@ -3,17 +3,20 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/ainative/',
   server: {
     port: 5173,
     proxy: {
-      '/api': {
+      '/ainative/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ainative/, ''),
       },
-      '/ws': {
+      '/ainative/ws': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         ws: true,
+        rewrite: (path) => path.replace(/^\/ainative/, ''),
       },
     },
   },

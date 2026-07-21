@@ -22,7 +22,7 @@ import type {
 import type { CareContract, CareContractCreate } from '../types/contracts';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/ainative/api',
   headers: { 'Content-Type': 'application/json' },
 });
 

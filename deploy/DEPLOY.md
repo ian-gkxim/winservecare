@@ -78,8 +78,20 @@ If you have a domain pointing to the EC2 IP:
 
 ```bash
 sudo tee /etc/caddy/Caddyfile <<EOF
-yourdomain.com {
-    reverse_proxy localhost:8000
+wsc.gkim.digital {
+    handle_path /ainative* {
+        reverse_proxy localhost:8000
+    }
+
+    # Redirect /ainative without trailing content to /ainative/
+    handle /ainative {
+        redir /ainative/ permanent
+    }
+
+    # Other apps can be added here at different paths:
+    # handle_path /otherapp* {
+    #     reverse_proxy localhost:9000
+    # }
 }
 EOF
 sudo systemctl restart caddy
@@ -94,7 +106,7 @@ docker run -d \
   --name winserve \
   -p 8000:8000 \
   -v winserve-data:/app/data \
-  -e CORS_ORIGIN=https://yourdomain.com \
+  -e CORS_ORIGIN=https://wsc.gkim.digital \
   --restart unless-stopped \
   winserve-care
 ```

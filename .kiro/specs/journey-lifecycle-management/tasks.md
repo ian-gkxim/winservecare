@@ -30,11 +30,11 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - Add functions to `backend/app/db/journey_repository.py`: `create_actual_journey`, `get_actual_journeys_by_day`, `get_actual_journey_by_journey_id`, `find_matching_planned_journey`
     - _Requirements: 4.1, 4.6, 5.1_
 
-  - [ ]* 2.4 Write property tests for plan creation round-trip
+  - [x]* 2.4 Write property tests for plan creation round-trip
     - **Property 1: Journey plan creation round-trip**
     - **Validates: Requirements 1.1, 1.5**
 
-  - [ ]* 2.5 Write property tests for plan versioning
+  - [x]* 2.5 Write property tests for plan versioning
     - **Property 4: Plan versioning increments sequentially**
     - **Validates: Requirements 1.6, 6.1**
 
@@ -55,18 +55,18 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - Implement `delete_plan` in `JourneyService`: validates no active journeys, validates not past date, validates not today's only plan, performs soft-delete with archive timestamp
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ]* 4.4 Write property tests for operating day validation
+  - [x]* 4.4 Write property tests for operating day validation
     - **Property 3: Operating day date validation**
     - **Validates: Requirements 1.3, 1.4**
 
-  - [ ]* 4.5 Write property tests for modification state rules
+  - [x]* 4.5 Write property tests for modification state rules
     - **Property 5: Modifications always create new versions preserving prior state**
     - **Property 6: Planned journey field editability**
     - **Property 7: In-progress journey restricts editable fields**
     - **Property 8: Terminal states reject modification**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.6**
 
-  - [ ]* 4.6 Write property tests for deletion guard
+  - [x]* 4.6 Write property tests for deletion guard
     - **Property 9: Deletion guard — no active journeys**
     - **Property 10: Soft-delete archives with timestamp**
     - **Validates: Requirements 3.1, 3.2, 3.3**
@@ -80,7 +80,7 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - Implement `cancel_journey` in `JourneyService`: validates current status, sets status to cancelled with timestamp, creates new plan version, handles visit unassignment for in-progress journeys
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-  - [ ]* 5.3 Write property tests for actual journey data
+  - [x]* 5.3 Write property tests for actual journey data
     - **Property 11: Actual journey data persistence round-trip**
     - **Property 12: State transition — departure triggers in_progress**
     - **Property 13: State transition — arrival triggers completed**
@@ -88,7 +88,7 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - **Property 15: Actual journey matching selects closest planned departure**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.5, 4.6**
 
-  - [ ]* 5.4 Write property tests for cancellation
+  - [x]* 5.4 Write property tests for cancellation
     - **Property 21: Cancellation of planned journey**
     - **Property 22: Cancellation of in-progress journey unassigns visits**
     - **Property 23: Terminal states reject cancellation**
@@ -110,18 +110,18 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - Implement `query_journeys` in `JourneyService`: applies filters (operating_day, carer_id, status), validates filter values, uses latest plan version per day, supports pagination, orders by departure descending for carer queries
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7_
 
-  - [ ]* 7.4 Write property tests for comparison and variance
+  - [x]* 7.4 Write property tests for comparison and variance
     - **Property 16: Variance calculation correctness**
     - **Property 17: Comparison includes unmatched entries with null variances**
     - **Property 18: Comparison results grouped by carer and ordered by departure**
     - **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5**
 
-  - [ ]* 7.5 Write property tests for history and date range
+  - [x]* 7.5 Write property tests for history and date range
     - **Property 19: History returns versions in chronological order**
     - **Property 20: Date range validation for historical queries**
     - **Validates: Requirements 6.3, 6.6**
 
-  - [ ]* 7.6 Write property tests for query and filtering
+  - [x]* 7.6 Write property tests for query and filtering
     - **Property 24: Query filter intersection semantics**
     - **Property 25: Carer query ordering**
     - **Property 26: Pagination correctness**
@@ -152,7 +152,7 @@ This plan implements the Journey Lifecycle Management feature by building up fro
     - Import and include the journeys router in `backend/app/main.py`
     - _Requirements: 1.1_
 
-  - [ ]* 9.5 Write property test for optimiser route conversion
+  - [x]* 9.5 Write property test for optimiser route conversion
     - **Property 2: Optimiser route conversion produces ordered planned journeys**
     - **Validates: Requirements 1.2**
 

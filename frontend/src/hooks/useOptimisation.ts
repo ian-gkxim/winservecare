@@ -62,7 +62,7 @@ export function useOptimisation(): UseOptimisationReturn {
   }, []);
 
   const { connectionState, connect, disconnect, send } = useWebSocket({
-    url: '/ws/optimise',
+    url: '/ainative/ws/optimise',
     onMessage: handleMessage,
   });
 
