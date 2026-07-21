@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Winserve Care Services">
+  <title>Winserve Care Services</title>
+  <g transform="translate(68 20)">
+    <path d="M32 57.5C9.5 42 6.5 26.5 14.5 17.8c5.5-6 14.2-4.7 17.5 1.9 3.3-6.6 12-7.9 17.5-1.9C57.5 26.5 54.5 42 32 57.5Z"
+          fill="none" stroke="#1E5FAD" stroke-width="3.2" stroke-linejoin="round"/>
+    <circle cx="32" cy="22.5" r="3.6" fill="#E8624B"/>
+    <path d="M22.5 38c0-4.6 4.3-8.2 9.5-8.2s9.5 3.6 9.5 8.2v.8c0 1-.8 1.8-1.8 1.8H24.3c-1 0-1.8-.8-1.8-1.8V38Z" fill="#E8624B"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="100" y="130" font-family="'Fraunces', Georgia, serif" font-weight="600" font-size="28" letter-spacing="1.5" fill="#0F2340">WINSERVE</text>
+    <text x="100" y="152" font-family="'Inter', system-ui, sans-serif" font-weight="500" font-size="11" letter-spacing="4" fill="#1E5FAD">CARE SERVICES</text>
+  </g>
+</svg>
