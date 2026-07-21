@@ -10,11 +10,11 @@ export const Route = createFileRoute("/")({
         content:
           "WinServeCare is the UK's first AI-native home care platform — matching families with trusted carers, fast.",
       },
-      { property: "og:title", content: "WinServeCare — AI-native home care, built for Britain" },
+      { property: "og:title", content: "WinServeCare — The operating system for care" },
       {
         property: "og:description",
         content:
-          "Home care matching is module one. We're building the operating system the UK's care sector runs on.",
+          "WinServeCare is the UK's first AI-native home care platform — matching families with trusted carers, fast.",
       },
     ],
   }),
@@ -73,7 +73,7 @@ function Splash() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="#"
+                href="https://wsc.gkim.digital/ainative"
                 className="inline-flex items-center justify-center rounded-xl bg-[color:var(--brand-primary)] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:brightness-110"
               >
                 Enter
@@ -211,7 +211,7 @@ function Splash() {
           </h2>
           <div className="mt-8">
             <a
-              href="#"
+              href="https://wsc.gkim.digital/ainative"
               className="inline-flex items-center justify-center rounded-xl bg-[color:var(--brand-primary)] px-8 py-4 text-base font-semibold text-white shadow-sm transition hover:brightness-110"
             >
               Enter
