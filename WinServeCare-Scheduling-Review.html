@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinServe Care — Scheduling Optimisation Discovery Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#123456;
+  --navy-2:#1B4B7A;
+  --navy-3:#0E2A47;
+  --gold:#C99A44;
+  --gold-2:#B8843A;
+  --bg:#F4F6F8;
+  --card:#FFFFFF;
+  --line:#E1E6EB;
+  --text:#232B33;
+  --text-muted:#5B6672;
+  --ok:#2E7D4F;
+  --warn:#B8863A;
+  --bad:#B4472F;
+  --radius:10px;
+  --shadow:0 1px 2px rgba(18,52,86,.06), 0 4px 14px rgba(18,52,86,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif; color:var(--navy-3); margin:0 0 .5em;}
+a{color:var(--navy-2);}
+.app{display:flex; min-height:100vh;}
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  width:290px; flex:none; background:var(--navy-3); color:#fff;
+  display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.sidebar .brand{display:flex; align-items:center; gap:10px; padding:20px 18px 14px; border-bottom:1px solid rgba(255,255,255,.12);}
+.sidebar .brand img{height:34px; background:#fff; border-radius:6px; padding:4px;}
+.sidebar .brand .name{font-family:'Poppins',sans-serif; font-weight:600; font-size:14.5px; line-height:1.25;}
+.sidebar .brand .name small{display:block; font-weight:400; font-size:11px; color:#B7C4D1;}
+nav.navlist{flex:1; padding:10px 10px 20px;}
+.navgroup-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:#8CA0B3; padding:14px 10px 6px;}
+.navitem{
+  display:flex; align-items:center; gap:9px; padding:9px 10px; border-radius:8px; cursor:pointer;
+  font-size:13.3px; color:#DCE6EF; margin-bottom:2px;
+}
+.navitem:hover{background:rgba(255,255,255,.07);}
+.navitem.active{background:var(--gold); color:var(--navy-3); font-weight:600;}
+.navitem .dot{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.25); flex:none;}
+.navitem.done .dot{background:#6FCF97;}
+.navitem.active .dot{background:var(--navy-3);}
+.sidebar-footer{padding:14px 18px; border-top:1px solid rgba(255,255,255,.12); font-size:11px; color:#8CA0B3;}
+
+/* ---------- Main ---------- */
+.main{flex:1; min-width:0;}
+.topbar{
+  position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid var(--line);
+  padding:14px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.topbar h2{font-size:16px; margin:0;}
+.btn{
+  border:1px solid var(--line); background:#fff; color:var(--navy-3); padding:8px 14px; border-radius:8px;
+  font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:6px;
+}
+.btn:hover{border-color:var(--navy-2); color:var(--navy-2);}
+.btn.primary{background:var(--navy); border-color:var(--navy); color:#fff;}
+.btn.primary:hover{background:var(--navy-2);}
+.btn.gold{background:var(--gold); border-color:var(--gold); color:var(--navy-3);}
+.btn.gold:hover{background:var(--gold-2);}
+.topbar-actions{display:flex; gap:8px; align-items:center;}
+.menu-btn{display:none; border:1px solid var(--line); background:#fff; border-radius:8px; width:34px; height:34px; align-items:center; justify-content:center; cursor:pointer; font-size:16px; margin-right:4px;}
+.sidebar-scrim{display:none;}
+
+.content{max-width:880px; margin:0 auto; padding:34px 32px 90px;}
+.page-title{font-size:24px; margin-bottom:4px;}
+.page-kicker{font-size:12.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold-2); font-weight:600; margin-bottom:8px;}
+.intro-block{margin-bottom:22px;}
+.intro-block p{color:var(--text-muted);}
+
+.callout{
+  background:#EAF1F7; border:1px solid #D3E1EC; border-left:4px solid var(--navy-2); border-radius:8px;
+  padding:14px 16px; margin:16px 0; font-size:14px; color:var(--navy-3);
+}
+.callout.warn{background:#FBF3E6; border-color:#F0DDB8; border-left-color:var(--gold-2); color:#6B4E1E;}
+
+p{margin:0 0 .8em;}
+ul.doc-list{margin:.3em 0 .9em; padding-left:22px;}
+ul.doc-list li{margin-bottom:4px;}
+.bold-note{font-weight:600; color:var(--navy-3); background:#F1F5F8; border-radius:6px; padding:8px 12px; margin:10px 0;}
+
+.subsection{margin:26px 0;}
+.subsection h3{font-size:16px; padding-bottom:8px; border-bottom:2px solid var(--line); margin-bottom:12px;}
+
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px;
+  margin-bottom:14px; box-shadow:var(--shadow);
+}
+.card .q-text{font-weight:600; font-size:14.5px; color:var(--navy-3); margin-bottom:6px;}
+.card .q-bullets{margin:6px 0 10px; padding-left:20px; font-size:13px; color:var(--text-muted);}
+.card .q-bullets li{margin-bottom:2px;}
+.card textarea{
+  width:100%; border:1px solid var(--line); border-radius:7px; padding:9px 11px; font-family:inherit;
+  font-size:13.5px; resize:vertical; min-height:52px; color:var(--text);
+}
+.card textarea:focus{outline:none; border-color:var(--navy-2); box-shadow:0 0 0 3px rgba(27,75,122,.12);}
+.card .answer-label{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin:8px 0 4px;}
+
+.assumption-card .why{font-size:12.5px; color:var(--text-muted); margin-bottom:10px; font-style:italic;}
+.status-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+.status-opt{
+  border:1.5px solid var(--line); border-radius:7px; padding:6px 12px; font-size:12.5px; cursor:pointer;
+  color:var(--text-muted); font-weight:600; user-select:none;
+}
+.status-opt[data-v="agree"].sel{background:#E6F4EC; border-color:var(--ok); color:var(--ok);}
+.status-opt[data-v="partial"].sel{background:#FBF1E1; border-color:var(--warn); color:var(--warn);}
+.status-opt[data-v="challenge"].sel{background:#FBEAE6; border-color:var(--bad); color:var(--bad);}
+.status-opt:hover{border-color:#9FB1BF;}
+
+.note-text{color:var(--text-muted); font-size:13.5px; font-style:italic; margin:10px 0;}
+
+.page-comment{
+  margin-top:30px; background:#FCFAF4; border:1px dashed #E4D3AA; border-radius:var(--radius); padding:16px 18px;
+}
+.page-comment h4{font-size:13.5px; margin-bottom:6px; color:var(--gold-2);}
+.page-comment textarea{width:100%; min-height:80px; border:1px solid var(--line); border-radius:7px; padding:10px; font-family:inherit; font-size:13.5px;}
+
+.func-badges{display:flex; gap:8px; margin-bottom:14px;}
+.badge{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:4px 9px; border-radius:20px; background:#EAF1F7; color:var(--navy-2);}
+.constraint-box{border-radius:9px; padding:14px 16px; margin:10px 0;}
+.constraint-box.hard{background:#FBEAE6; border:1px solid #F0CFC6;}
+.constraint-box.hard h4{color:var(--bad);}
+.constraint-box.soft{background:#EAF1F7; border:1px solid #D3E1EC;}
+.constraint-box.soft h4{color:var(--navy-2);}
+.constraint-box h4{font-size:13px; margin-bottom:6px;}
+
+.summary-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:18px 0 26px;}
+.summary-stat{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:16px; text-align:center; box-shadow:var(--shadow);}
+.summary-stat .num{font-family:'Poppins',sans-serif; font-size:26px; font-weight:700; color:var(--navy);}
+.summary-stat .lbl{font-size:12px; color:var(--text-muted); margin-top:2px;}
+.page-check-list{border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin-bottom:22px;}
+.page-check-row{display:flex; align-items:center; justify-content:space-between; padding:10px 16px; font-size:13.5px; border-bottom:1px solid var(--line); background:#fff; cursor:pointer;}
+.page-check-row:last-child{border-bottom:none;}
+.page-check-row:hover{background:#F7FAFC;}
+.pill{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px;}
+.pill.complete{background:#E6F4EC; color:var(--ok);}
+.pill.partial{background:#FBF1E1; color:var(--warn);}
+.pill.empty{background:#F1F3F5; color:var(--text-muted);}
+
+.export-actions{display:flex; gap:10px; flex-wrap:wrap; margin:20px 0;}
+
+footer.doc-footer{text-align:center; padding:20px; color:var(--text-muted); font-size:11.5px;}
+
+@media (max-width:860px){
+  .sidebar{position:fixed; left:-300px; z-index:50; transition:left .2s ease; box-shadow:4px 0 18px rgba(0,0,0,.2);}
+  .sidebar.open{left:0;}
+  .menu-btn{display:inline-flex;}
+  .summary-grid{grid-template-columns:1fr;}
+  .sidebar-scrim.open{display:block; position:fixed; inset:0; background:rgba(14,42,71,.35); z-index:40;}
+  .topbar{padding:14px 16px;}
+  .content{padding:24px 16px 90px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img src="https://images.squarespace-cdn.com/content/v1/61c97a5c7fa7c716b69f8a76/5bb86e81-99bc-46f0-b036-67a1afb0a557/Winserve+Logo+Blue.png?format=1500w" alt="WinServe logo">
+      <div class="name">Scheduling Optimisation<small>Discovery Review — V1 Scope</small></div>
+    </div>
+    <nav class="navlist" id="navlist"></nav>
+    <div class="sidebar-footer">Prepared for Amon, Anitha, Ebrahim &amp; Louise · WinServe Care Services</div>
+  </aside>
+
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">&#9776;</button>
+      <h2 id="topbarTitle">Welcome</h2>
+    </div>
+    <div class="content" id="liveArea"></div>
+    <footer class="doc-footer">This is a working discovery draft for review and comment — not a finished specification. Your answers are saved automatically in this browser as you go.</footer>
+  </main>
+</div>
+
+<script>
+const MODEL = {"meta": {"title": "WinServe Care \u2014 Scheduling Optimisation", "subtitle": "Client Discovery Baseline \u2014 Big Picture and V1 Scope", "recipients": ["Amon", "Anitha", "Ebrahim", "Louise"]}, "pages": [{"id": "sec1", "nav": "1. The Big Picture", "group": "Big picture", "title": "1. What we know for sure about the big picture", "type": "narrative", "intro": [], "subsections": [{"id": "1.1", "title": "1.1 The operational problem", "blocks": [{"type": "p", "text": "WinServe delivers recurring care visits to people in their homes."}, {"type": "p", "text": "A care package may require one or more visits each day, often within expected time windows. Once WinServe accepts a package, the visits are operational commitments rather than optional tasks. Amon stated that missed calls are unacceptable and that service users rely on WinServe attending as agreed."}, {"type": "p", "text": "The daily planning problem therefore consists of:"}, {"type": "ul", "items": [{"text": "a defined body of required visits;"}, {"text": "a workforce with varying availability and suitability;"}, {"text": "visits at multiple geographic locations;"}, {"text": "time, travel and operational constraints;"}, {"text": "a requirement to allocate every visit safely and reliably."}]}]}, {"id": "1.2", "title": "1.2 The present system supports manual rostering", "blocks": [{"type": "p", "text": "WinServe currently uses CarePlanner, now part of Nourish, as its rostering system. The platform publicly identifies rostering and care-worker management as central capabilities."}, {"type": "p", "text": "The screenshots and demonstration show schedule views in which:"}, {"type": "ul", "items": [{"text": "staff or service users appear as rows;"}, {"text": "time appears horizontally;"}, {"text": "visits and periods of work appear as coloured blocks;"}, {"text": "unallocated work can be identified;"}, {"text": "staff unavailability can be represented;"}, {"text": "single and double-staffed visits can be shown;"}, {"text": "longer continuous-care assignments can be represented."}]}, {"type": "p", "text": "However, WinServe staff described the allocation process itself as substantially manual. The application displays visits and assignments, but experienced planners must decide how the work should be grouped and allocated."}]}, {"id": "1.3", "title": "1.3 The real planning problem is not simply geographic", "blocks": [{"type": "p", "text": "Travel distance matters, but it is only one component."}, {"type": "p", "text": "The team identified constraints and preferences including:"}, {"type": "ul", "items": [{"text": "staff availability;"}, {"text": "service-user gender preferences or requirements;"}, {"text": "carers banned from particular packages;"}, {"text": "carers who are merely less preferred;"}, {"text": "whether a carer drives;"}, {"text": "whether two carers can work together;"}, {"text": "whether both carers can remain together for an entire run;"}, {"text": "prior experience with the service user;"}, {"text": "continuity of care;"}, {"text": "double-up visits requiring two carers;"}, {"text": "moving and handling needs;"}, {"text": "geographic proximity;"}, {"text": "visit timing;"}, {"text": "fairness in the allocation of desirable and undesirable work."}]}, {"type": "p", "text": "Many of these factors are currently held in the knowledge of experienced staff rather than encoded in a structured decision system."}]}, {"id": "1.4", "title": "1.4 Travel creates a direct financial cost", "blocks": [{"type": "p", "text": "WinServe owns, insures, fuels and maintains vehicles used to deliver care. It also pays carers for travel time."}, {"type": "p", "text": "Accordingly, inefficient routes create several costs:"}, {"type": "ul", "items": [{"text": "paid but non-care time;"}, {"text": "fuel;"}, {"text": "vehicle wear;"}, {"text": "reduced vehicle capacity;"}, {"text": "reduced staff satisfaction;"}, {"text": "fewer care hours deliverable within a shift."}]}, {"type": "p", "text": "The team explicitly wants to reduce unnecessary travel, group nearby service users and create tighter runs."}]}, {"id": "1.5", "title": "1.5 Human oversight is required", "blocks": [{"type": "p", "text": "Amon does not expect a fully autonomous scheduling system at the outset."}, {"type": "p", "text": "The intended progression is:"}, {"type": "ul", "items": [{"text": "solve the most material problems;"}, {"text": "retain planner oversight;"}, {"text": "introduce further constraints and automation incrementally;"}, {"text": "improve the system through practical use."}]}, {"type": "p", "text": "The first system should therefore recommend, explain and allow correction, rather than silently publish a final rota."}]}]}, {"id": "sec2", "nav": "2. Assumptions to Confirm", "group": "Big picture", "title": "2. Assumptions we should check about the big picture", "type": "assumptions", "intro": [{"type": "p", "text": "The following are plausible interpretations, but they have not yet been sufficiently confirmed."}], "groups": [{"id": "2.1", "title": "2.1 Business-scope assumptions", "items": [{"id": "2.1-a1", "text": "The primary V1 objective is to improve scheduling efficiency, rather than replace CarePlanner.", "why": "Determines whether we build an optimisation layer or an entire care-management platform."}, {"id": "2.1-a2", "text": "CarePlanner will remain the operational system of record during V1.", "why": "Determines integration, data import and output requirements."}, {"id": "2.1-a3", "text": "WinServe is willing to duplicate or export data from CarePlanner.", "why": "Required for practical implementation."}, {"id": "2.1-a4", "text": "WinServe\u2019s current licence allows the necessary export or integration.", "why": "Could materially affect technical feasibility."}, {"id": "2.1-a5", "text": "The first deployment is for one branch, territory or operating unit.", "why": "Determines complexity and rollout risk."}, {"id": "2.1-a6", "text": "Most visits are recurring and therefore predictable.", "why": "Recurring work makes historical learning and template-based optimisation easier."}, {"id": "2.1-a7", "text": "The same operational problem occurs across both of WinServe\u2019s territories.", "why": "Determines whether one optimisation model can serve both."}]}, {"id": "2.2", "title": "2.2 Planning assumptions", "items": [{"id": "2.2-a1", "text": "Every required visit already exists in CarePlanner before optimisation starts.", "why": "Allows V1 to focus on allocation rather than care-package creation."}, {"id": "2.2-a2", "text": "Visit duration and acceptable time windows are known.", "why": "Essential for feasible scheduling."}, {"id": "2.2-a3", "text": "Carer working availability is sufficiently accurate.", "why": "Inaccurate availability invalidates any recommended rota."}, {"id": "2.2-a4", "text": "Addresses are complete and can be geocoded reliably.", "why": "Required for map and journey-time calculations."}, {"id": "2.2-a5", "text": "Runs usually start and end from identifiable locations.", "why": "Required for total route cost and shift calculations."}, {"id": "2.2-a6", "text": "Staff normally travel in WinServe vehicles rather than independently.", "why": "Changes vehicle, driver and pairing logic."}, {"id": "2.2-a7", "text": "Double-up carers usually travel together.", "why": "Affects route synchronisation."}, {"id": "2.2-a8", "text": "Travel time should be based on road journey time rather than postcode proximity.", "why": "Needed for a useful optimiser."}, {"id": "2.2-a9", "text": "Historical assignments contain enough repetition to reveal preferences and continuity.", "why": "Important for inferring soft factors."}]}, {"id": "2.3", "title": "2.3 Decision-policy assumptions", "items": [{"id": "2.3-a1", "text": "Constraints can be divided into mandatory rules and preferences.", "why": "The optimiser must never trade away a safety requirement for efficiency."}, {"id": "2.3-a2", "text": "WinServe can assign relative importance to preferences.", "why": "Needed when no schedule satisfies every preference."}, {"id": "2.3-a3", "text": "A planner can override any recommendation.", "why": "Important for governance and trust."}, {"id": "2.3-a4", "text": "Overrides can be captured with a reason.", "why": "Creates the learning mechanism for future versions."}, {"id": "2.3-a5", "text": "WinServe wants the system to explain why it selected a carer or route.", "why": "Determines user-interface and audit requirements."}, {"id": "2.3-a6", "text": "Fairness between carers is a relevant but secondary objective.", "why": "Could materially alter allocation decisions."}]}, {"id": "2.4", "title": "2.4 Commercial and measurement assumptions", "items": [{"id": "2.4-a1", "text": "The most important financial metric is paid travel time saved.", "why": "Determines the optimisation objective."}, {"id": "2.4-a2", "text": "Vehicle mileage and fuel cost are also material enough to measure.", "why": "Determines cost-model sophistication."}, {"id": "2.4-a3", "text": "Continuity, punctuality and missed-call avoidance are at least as important as direct cost.", "why": "Prevents an optimiser from producing cheap but poor care."}, {"id": "2.4-a4", "text": "WinServe can provide historical payroll, mileage and visit-completion data.", "why": "Required to establish a baseline and prove benefit."}]}]}, {"id": "sec3", "nav": "3. Key Questions", "group": "Big picture", "title": "3. Questions to uncover the real big-picture need", "type": "questions", "intro": [{"type": "p", "text": "These questions should be answered collaboratively before finalising the specification."}], "subsections": [{"id": "3.1", "title": "3.1 What problem are we actually solving first?", "blocks": [{"type": "q", "id": "3.1-q1", "question": "What causes the greatest operational pain today?", "bullets": ["constructing initial runs;", "assigning carers;", "handling absences;", "reducing travel;", "preventing late visits;", "coordinating double-up calls;", "changing rotas after publication;", "producing payroll;", "something else?"], "answerable": true}, {"type": "q", "id": "3.1-q2", "question": "Which part consumes the most planner time each week?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.1-q3", "question": "Which part costs the business the most money?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.1-q4", "question": "Which part creates the greatest risk to service users?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.1-q5", "question": "Which part creates the most staff dissatisfaction?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.1-q6", "question": "What would make Amon say after 30 days:\n\u201cThis first version has already paid for itself\u201d?", "bullets": [], "answerable": true}]}, {"id": "3.2", "title": "3.2 Where should the new system sit?", "blocks": [{"type": "q", "id": "3.2-q1", "question": "Is V1:", "bullets": ["a replacement for CarePlanner scheduling;", "an optimisation tool beside CarePlanner;", "a prototype using copied data;", "an internal planning assistant that exports recommendations?"], "answerable": true}, {"type": "q", "id": "3.2-q2", "question": "Where will the final approved rota be maintained?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.2-q3", "question": "Must V1 write changes back into CarePlanner?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.2-q4", "question": "Could planners initially upload CSV or spreadsheet exports?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.2-q5", "question": "Is there an API available under the present CarePlanner/Nourish agreement?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.2-q6", "question": "Are there any restrictions on copying service-user or staff data into another system?", "bullets": [], "answerable": true}]}, {"id": "3.3", "title": "3.3 What is the planning horizon?", "blocks": [{"type": "q", "id": "3.3-q1", "question": "Is scheduling performed:", "bullets": ["daily;", "weekly;", "fortnightly;", "four weeks in advance?"], "answerable": true}, {"type": "q", "id": "3.3-q2", "question": "How often is the rota materially revised after first publication?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.3-q3", "question": "At what point is a rota considered final?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.3-q4", "question": "How much work is stable recurring work versus newly added or changing work?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.3-q5", "question": "Are overnight and live-in care part of the same scheduling process?", "bullets": [], "answerable": true}]}, {"id": "3.4", "title": "3.4 How is operational success measured?", "blocks": [{"type": "q", "id": "3.4-q1", "question": "What are current values for:", "bullets": ["total daily visits;", "care hours;", "paid travel hours;", "mileage;", "overtime;", "unallocated visits;", "late calls;", "missed calls;", "planner hours spent rostering;", "schedule changes;", "agency staff usage?"], "answerable": true}, {"type": "q", "id": "3.4-q2", "question": "Which KPIs are reported to commissioners, councils, CQC, families or management?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.4-q3", "question": "What constitutes \u201con time\u201d?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.4-q4", "question": "How much variation from a planned visit time is acceptable?", "bullets": [], "answerable": true}, {"type": "q", "id": "3.4-q5", "question": "Which metrics should never worsen even when travel cost improves?", "bullets": [], "answerable": true}]}, {"id": "3.5", "title": "3.5 Which rules are genuinely mandatory?", "blocks": [{"type": "q", "id": "3.5-q1", "question": "For every rule we must ask:", "bullets": ["Is it required by law, regulation or care plan?", "Is it an organisational policy?", "Is it a strong preference?", "Is it merely normal practice?", "Can a planner override it?", "Who is authorised to change it?"], "answerable": true}, {"type": "q", "id": "3.5-q2", "question": "This is particularly important for:", "bullets": ["gender;", "medication competence;", "moving and handling;", "driver status;", "pair working;", "continuity;", "service-user exclusions;", "staff incompatibilities;", "working hours;", "breaks;", "arrival windows."], "answerable": true}]}, {"id": "3.6", "title": "3.6 What should explicitly remain outside V1?", "blocks": [{"type": "q", "id": "3.6-q1", "question": "The client should confirm whether the following can be deferred:", "bullets": ["care-plan authoring;", "medication administration records;", "full staff recruitment and HR;", "training delivery;", "DBS management;", "payroll calculation;", "invoicing;", "commissioner billing;", "family portal;", "carer mobile application;", "electronic visit verification;", "care-note recording;", "incident management;", "safeguarding workflow;", "CQC audit management;", "demand forecasting;", "automatic recruitment recommendations;", "fully autonomous rota publication;", "multi-company commercial SaaS administration."], "answerable": true}, {"type": "note", "text": "My recommendation is that all of these remain outside the initial optimisation MVP unless one is indispensable to accessing or validating scheduling data."}]}]}, {"id": "sec4", "nav": "4. Proposed V1 Scope (Overview)", "group": "Big picture", "title": "4. MECE set of functions for V1", "type": "narrative", "intro": [{"type": "p", "text": "The following eight functional areas are intended to be mutually exclusive and collectively sufficient for the first useful version."}], "subsections": [{"id": "V1.1-ov", "title": "V1.1 Data Intake and Validation", "blocks": [{"type": "p", "text": "Bring the minimum required operational data into the application and identify missing or invalid records."}]}, {"id": "V1.2-ov", "title": "V1.2 Planning Configuration", "blocks": [{"type": "p", "text": "Define the date, territory, planning horizon, depots, available vehicles and optimisation priorities."}]}, {"id": "V1.3-ov", "title": "V1.3 Visit Demand Management", "blocks": [{"type": "p", "text": "Represent all care visits that must be delivered, including time windows, duration, location and staffing requirement."}]}, {"id": "V1.4-ov", "title": "V1.4 Workforce and Resource Availability", "blocks": [{"type": "p", "text": "Represent the carers, working hours, skills, driver status, availability, vehicles and pair-working conditions."}]}, {"id": "V1.5-ov", "title": "V1.5 Eligibility and Constraint Evaluation", "blocks": [{"type": "p", "text": "Determine which carers are permitted or suitable for each visit before route optimisation begins."}]}, {"id": "V1.6-ov", "title": "V1.6 Run Construction and Route Optimisation", "blocks": [{"type": "p", "text": "Group visits into feasible runs, sequence them geographically and assign suitable carers and vehicles."}]}, {"id": "V1.7-ov", "title": "V1.7 Planner Review and Exception Resolution", "blocks": [{"type": "p", "text": "Allow a human planner to inspect, amend, approve or reject recommendations and resolve unallocated work."}]}, {"id": "V1.8-ov", "title": "V1.8 Outputs, Audit and Performance Measurement", "blocks": [{"type": "p", "text": "Produce an approved rota, map, change record and comparison of the recommended plan against the existing or baseline plan."}, {"type": "p", "text": "These functions are deliberately narrower than the full CarePlanner product. CarePlanner/Nourish covers wider care-worker management, monitoring, payroll and related workflows; reproducing all of those would distract from the specific optimisation opportunity."}]}]}, {"id": "v1-1", "nav": "V1.1 Data Intake and Validation", "group": "V1 functions \u2014 detail", "title": "V1.1 Data Intake and Validation", "type": "function", "summary": [{"type": "p", "text": "The system needs a practical way to receive data from CarePlanner and any supplementary WinServe records."}, {"type": "p", "text": "The first implementation should support controlled imports rather than assuming a complex real-time integration. Likely inputs include:"}, {"type": "ul", "items": [{"text": "service users;"}, {"text": "visits;"}, {"text": "carers;"}, {"text": "availability;"}, {"text": "addresses;"}, {"text": "skills;"}, {"text": "exclusions;"}, {"text": "historic assignments;"}, {"text": "vehicles."}]}, {"type": "p", "text": "The system should show:"}, {"type": "ul", "items": [{"text": "records successfully imported;"}, {"text": "missing data;"}, {"text": "duplicates;"}, {"text": "invalid addresses;"}, {"text": "conflicting rules;"}, {"text": "visits that cannot yet be planned."}]}], "hard": null, "soft": null, "questions": [{"id": "V1.1-kq1", "text": "What exports can CarePlanner produce?"}, {"id": "V1.1-kq2", "text": "Can sample CSV or Excel files be provided?"}, {"id": "V1.1-kq3", "text": "Is the data stored separately for each branch?"}, {"id": "V1.1-kq4", "text": "Are staff and service-user identifiers stable?"}, {"id": "V1.1-kq5", "text": "Where are preferences and exclusions currently recorded?"}, {"id": "V1.1-kq6", "text": "How are cancelled or suspended care packages represented?"}, {"id": "V1.1-kq7", "text": "How frequently would data need to be refreshed?"}, {"id": "V1.1-kq8", "text": "What personally identifiable data can be omitted from the prototype?"}, {"id": "V1.1-kq9", "text": "Who is responsible for correcting bad data?"}, {"id": "V1.1-kq10", "text": "Do we initially need read-only import only?"}]}, {"id": "v1-2", "nav": "V1.2 Planning Configuration", "group": "V1 functions \u2014 detail", "title": "V1.2 Planning Configuration", "type": "function", "summary": [{"type": "p", "text": "Before optimisation begins, the planner must define the operating context."}, {"type": "p", "text": "This includes:"}, {"type": "ul", "items": [{"text": "date or date range;"}, {"text": "branch or territory;"}, {"text": "available carers;"}, {"text": "available vehicles;"}, {"text": "shift start and end locations;"}, {"text": "planning objectives;"}, {"text": "acceptable thresholds;"}, {"text": "whether the exercise is a draft, simulation or live rota."}]}, {"type": "p", "text": "The planner should also be able to choose priorities such as:"}, {"type": "ul", "items": [{"text": "complete every visit;"}, {"text": "minimise travel time;"}, {"text": "minimise mileage;"}, {"text": "maximise continuity;"}, {"text": "minimise overtime;"}, {"text": "minimise change from the existing rota."}]}], "hard": null, "soft": null, "questions": [{"id": "V1.2-kq1", "text": "Is the first unit of planning one day or one week?"}, {"id": "V1.2-kq2", "text": "Are rotas constructed by branch, postcode area or management team?"}, {"id": "V1.2-kq3", "text": "Where do runs start and end?"}, {"id": "V1.2-kq4", "text": "Can cars be left at carers\u2019 homes?"}, {"id": "V1.2-kq5", "text": "Does each vehicle belong to a branch, team or named driver?"}, {"id": "V1.2-kq6", "text": "Which optimisation goal comes first?"}, {"id": "V1.2-kq7", "text": "Can priorities vary by day or territory?"}, {"id": "V1.2-kq8", "text": "How should the system treat an existing partial rota?"}, {"id": "V1.2-kq9", "text": "Should it optimise from scratch or improve the current plan?"}, {"id": "V1.2-kq10", "text": "What constitutes an acceptable computation time?"}]}, {"id": "v1-3", "nav": "V1.3 Visit Demand Management", "group": "V1 functions \u2014 detail", "title": "V1.3 Visit Demand Management", "type": "function", "summary": [{"type": "p", "text": "Every required call must be represented as a visit-demand record."}, {"type": "p", "text": "Minimum fields are likely to include:"}, {"type": "ul", "items": [{"text": "service-user reference;"}, {"text": "address;"}, {"text": "date;"}, {"text": "preferred or required time;"}, {"text": "earliest acceptable arrival;"}, {"text": "latest acceptable arrival;"}, {"text": "visit duration;"}, {"text": "number of carers required;"}, {"text": "care type;"}, {"text": "required competencies;"}, {"text": "continuity preference;"}, {"text": "assigned or preferred run;"}, {"text": "cancellation status."}]}, {"type": "p", "text": "Recurring visits may be generated from templates."}], "hard": null, "soft": null, "questions": [{"id": "V1.3-kq1", "text": "Does each visit have a fixed time or a window?"}, {"id": "V1.3-kq2", "text": "How wide are typical acceptable windows?"}, {"id": "V1.3-kq3", "text": "Who determines visit duration?"}, {"id": "V1.3-kq4", "text": "Can duration vary by carer or day?"}, {"id": "V1.3-kq5", "text": "How are double-up calls represented?"}, {"id": "V1.3-kq6", "text": "Must both carers arrive and leave together?"}, {"id": "V1.3-kq7", "text": "Can a visit be split between carers?"}, {"id": "V1.3-kq8", "text": "Are some calls linked in sequence, such as medication or meal support?"}, {"id": "V1.3-kq9", "text": "Are there minimum intervals between visits to the same person?"}, {"id": "V1.3-kq10", "text": "Which visits can move most easily?"}, {"id": "V1.3-kq11", "text": "How are emergency or newly commissioned visits inserted?"}, {"id": "V1.3-kq12", "text": "Are live-in and continuous-care assignments included in V1?"}]}, {"id": "v1-4", "nav": "V1.4 Workforce and Resource Availability", "group": "V1 functions \u2014 detail", "title": "V1.4 Workforce and Resource Availability", "type": "function", "summary": [{"type": "p", "text": "The optimiser must know who and what is available."}, {"type": "p", "text": "For carers this includes:"}, {"type": "ul", "items": [{"text": "contracted or permitted hours;"}, {"text": "daily availability;"}, {"text": "shift limits;"}, {"text": "breaks;"}, {"text": "skills and competencies;"}, {"text": "driver status;"}, {"text": "vehicle eligibility;"}, {"text": "working location;"}, {"text": "pair compatibility;"}, {"text": "planned leave or absence."}]}, {"type": "p", "text": "For vehicles this includes:"}, {"type": "ul", "items": [{"text": "availability;"}, {"text": "start location;"}, {"text": "capacity;"}, {"text": "driver requirements;"}, {"text": "operating cost, if required."}]}], "hard": null, "soft": null, "questions": [{"id": "V1.4-kq1", "text": "Is availability stored reliably in CarePlanner?"}, {"id": "V1.4-kq2", "text": "What is the difference between availability and contracted hours?"}, {"id": "V1.4-kq3", "text": "Can carers decline individual runs?"}, {"id": "V1.4-kq4", "text": "What qualifications or competencies constrain assignment?"}, {"id": "V1.4-kq5", "text": "Which competencies expire?"}, {"id": "V1.4-kq6", "text": "Can non-drivers work without an allocated driver?"}, {"id": "V1.4-kq7", "text": "Are there restrictions on who may drive specific vehicles?"}, {"id": "V1.4-kq8", "text": "How many people can travel in each vehicle?"}, {"id": "V1.4-kq9", "text": "Do carers change vehicles during a shift?"}, {"id": "V1.4-kq10", "text": "Which carers cannot work together?"}, {"id": "V1.4-kq11", "text": "Are pair preferences symmetric?"}, {"id": "V1.4-kq12", "text": "What are the mandatory break and maximum-hours rules?"}, {"id": "V1.4-kq13", "text": "How is overtime authorised?"}]}, {"id": "v1-5", "nav": "V1.5 Eligibility and Constraint Evaluation", "group": "V1 functions \u2014 detail", "title": "V1.5 Eligibility and Constraint Evaluation", "type": "function", "summary": [{"type": "p", "text": "Before asking \u201cwhat is the cheapest route?\u201d, the system must ask:"}, {"type": "p", "text": "\u201cWhich assignments are safe and permissible?\u201d"}, {"type": "p", "text": "Rules should be classified as:"}], "hard": [{"type": "p", "text": "Must never be violated without explicit exceptional authority."}, {"type": "p", "text": "Examples:"}, {"type": "ul", "items": [{"text": "carer unavailable;"}, {"text": "banned carer;"}, {"text": "required gender;"}, {"text": "missing mandatory competency;"}, {"text": "no qualified driver;"}, {"text": "working-hours breach;"}, {"text": "impossible travel time;"}, {"text": "insufficient carers for a double-up call."}]}], "soft": [{"type": "p", "text": "The system should optimise these, but may compromise when necessary."}, {"type": "p", "text": "Examples:"}, {"type": "ul", "items": [{"text": "continuity of care;"}, {"text": "preferred carer;"}, {"text": "familiar carer;"}, {"text": "preferred working partner;"}, {"text": "geographic familiarity;"}, {"text": "workload fairness;"}, {"text": "avoidance of excessive travel;"}, {"text": "preservation of established runs."}]}, {"type": "p", "text": "Each recommendation should state which rules it satisfies and which preferences it compromises."}], "questions": [{"id": "V1.5-kq1", "text": "What is the definitive list of hard constraints?"}, {"id": "V1.5-kq2", "text": "Who can classify or reclassify a rule?"}, {"id": "V1.5-kq3", "text": "Where are bans recorded?"}, {"id": "V1.5-kq4", "text": "Is there a difference between \u201cbanned\u201d, \u201cdo not use\u201d and \u201cnot preferred\u201d?"}, {"id": "V1.5-kq5", "text": "How are service-user gender preferences documented?"}, {"id": "V1.5-kq6", "text": "Which clinical competencies are visit-specific?"}, {"id": "V1.5-kq7", "text": "How should continuity be measured?"}, {"id": "V1.5-kq8", "text": "How long since a previous visit still counts as familiarity?"}, {"id": "V1.5-kq9", "text": "Can an unfamiliar carer be used in an emergency?"}, {"id": "V1.5-kq10", "text": "How are staff conflicts represented?"}, {"id": "V1.5-kq11", "text": "Does one incompatibility invalidate an entire shared run?"}, {"id": "V1.5-kq12", "text": "What reason must be recorded when a hard rule is overridden?"}]}, {"id": "v1-6", "nav": "V1.6 Run Construction and Route Optimisation", "group": "V1 functions \u2014 detail", "title": "V1.6 Run Construction and Route Optimisation", "type": "function", "summary": [{"type": "p", "text": "This is the central computational function."}, {"type": "p", "text": "The system should:"}, {"type": "ul", "items": [{"text": "identify geographically and temporally compatible visits;"}, {"text": "group them into candidate runs;"}, {"text": "identify eligible carers and vehicles;"}, {"text": "sequence the visits;"}, {"text": "calculate journey times;"}, {"text": "verify visit windows, working hours and breaks;"}, {"text": "compare alternative plans;"}, {"text": "recommend the best feasible plan."}]}, {"type": "p", "text": "The map should show:"}, {"type": "ul", "items": [{"text": "visit locations;"}, {"text": "route order;"}, {"text": "carers or teams;"}, {"text": "travel legs;"}, {"text": "care time;"}, {"text": "idle time;"}, {"text": "late or risky visits;"}, {"text": "unallocated visits."}]}, {"type": "p", "text": "An animated or progressive map view would be valuable for demonstration and planner comprehension, but the correctness of the schedule is more important than animation in the first operational release."}], "hard": null, "soft": null, "questions": [{"id": "V1.6-kq1", "text": "What exactly constitutes a \u201crun\u201d at WinServe?"}, {"id": "V1.6-kq2", "text": "Are runs stable named templates or recreated each day?"}, {"id": "V1.6-kq3", "text": "Can a carer perform more than one run per day?"}, {"id": "V1.6-kq4", "text": "Must paired carers stay together for the whole run?"}, {"id": "V1.6-kq5", "text": "Can a driver drop off one carer and continue elsewhere?"}, {"id": "V1.6-kq6", "text": "How much waiting time is acceptable?"}, {"id": "V1.6-kq7", "text": "How should traffic be estimated for future dates?"}, {"id": "V1.6-kq8", "text": "Is postcode-level accuracy sufficient or are full addresses required?"}, {"id": "V1.6-kq9", "text": "Should the optimiser minimise time, distance, cost or a weighted combination?"}, {"id": "V1.6-kq10", "text": "How should it value continuity versus travel savings?"}, {"id": "V1.6-kq11", "text": "Should it preserve familiar run structures where possible?"}, {"id": "V1.6-kq12", "text": "How should late-running calls affect subsequent calls?"}, {"id": "V1.6-kq13", "text": "Does V1 need same-day re-optimisation?"}]}, {"id": "v1-7", "nav": "V1.7 Planner Review and Exception Resolution", "group": "V1 functions \u2014 detail", "title": "V1.7 Planner Review and Exception Resolution", "type": "function", "summary": [{"type": "p", "text": "The system should present recommendations, not impose decisions."}, {"type": "p", "text": "The planner needs to be able to:"}, {"type": "ul", "items": [{"text": "view the proposed rota;"}, {"text": "view the map;"}, {"text": "see unallocated visits;"}, {"text": "see warnings;"}, {"text": "understand why each assignment was made;"}, {"text": "drag or reassign a visit;"}, {"text": "lock a visit, carer or run;"}, {"text": "rerun optimisation around locked decisions;"}, {"text": "compare alternatives;"}, {"text": "approve the plan;"}, {"text": "record reasons for overrides."}]}, {"type": "p", "text": "The system should surface exceptions rather than hide them."}, {"type": "p", "text": "Examples:"}, {"type": "ul", "items": [{"text": "no eligible carer;"}, {"text": "no feasible route;"}, {"text": "time-window conflict;"}, {"text": "unavailable double-up partner;"}, {"text": "competency deficit;"}, {"text": "excessive overtime;"}, {"text": "data missing;"}, {"text": "preference compromise."}]}], "hard": null, "soft": null, "questions": [{"id": "V1.7-kq1", "text": "Who may edit a proposed rota?"}, {"id": "V1.7-kq2", "text": "Who gives final approval?"}, {"id": "V1.7-kq3", "text": "Must planners see multiple alternatives?"}, {"id": "V1.7-kq4", "text": "What explanation is needed for each recommendation?"}, {"id": "V1.7-kq5", "text": "What actions should be possible by drag and drop?"}, {"id": "V1.7-kq6", "text": "Which decisions can be locked?"}, {"id": "V1.7-kq7", "text": "Should the system warn or prohibit a hard-rule breach?"}, {"id": "V1.7-kq8", "text": "What override reasons should be available?"}, {"id": "V1.7-kq9", "text": "Should an override automatically become a future rule?"}, {"id": "V1.7-kq10", "text": "How are urgent same-day changes handled?"}, {"id": "V1.7-kq11", "text": "Should carers be notified from V1, or should communication remain in CarePlanner?"}]}, {"id": "v1-8", "nav": "V1.8 Outputs, Audit and Performance Measurement", "group": "V1 functions \u2014 detail", "title": "V1.8 Outputs, Audit and Performance Measurement", "type": "function", "summary": [{"type": "p", "text": "The first version must demonstrate operational value, not merely generate an attractive schedule."}, {"type": "p", "text": "Outputs should include:"}, {"type": "ul", "items": [{"text": "proposed rota;"}, {"text": "approved rota;"}, {"text": "staff run sheets;"}, {"text": "visit sequence;"}, {"text": "map;"}, {"text": "travel time;"}, {"text": "mileage;"}, {"text": "care time;"}, {"text": "idle time;"}, {"text": "overtime;"}, {"text": "unallocated work;"}, {"text": "rule exceptions;"}, {"text": "comparison against the current or manually produced rota."}]}, {"type": "p", "text": "Every plan should retain:"}, {"type": "ul", "items": [{"text": "source data version;"}, {"text": "optimisation settings;"}, {"text": "recommendations;"}, {"text": "planner changes;"}, {"text": "approval;"}, {"text": "final result."}]}], "hard": null, "soft": null, "questions": [{"id": "V1.8-kq1", "text": "What format must the approved rota use?"}, {"id": "V1.8-kq2", "text": "Does it need to be re-entered into CarePlanner manually?"}, {"id": "V1.8-kq3", "text": "Is CSV export sufficient initially?"}, {"id": "V1.8-kq4", "text": "What information should appear on a run sheet?"}, {"id": "V1.8-kq5", "text": "Which figures are required for management reporting?"}, {"id": "V1.8-kq6", "text": "What baseline should the new schedule be compared with?"}, {"id": "V1.8-kq7", "text": "How will actual journey and visit times be obtained?"}, {"id": "V1.8-kq8", "text": "How will savings be calculated?"}, {"id": "V1.8-kq9", "text": "Should benefits be reported daily, weekly or monthly?"}, {"id": "V1.8-kq10", "text": "Which metrics should be available to commissioners?"}, {"id": "V1.8-kq11", "text": "What audit information is required for CQC or internal governance?"}, {"id": "V1.8-kq12", "text": "How long must historic recommendations and overrides be retained?"}]}, {"id": "sec61", "nav": "6.1 Historical data for soft factors", "group": "Historical data (reference)", "title": "6.1 Historical data for soft factors", "type": "narrative", "intro": [{"type": "bp", "text": "A. Historical carer-to-service-user assignments"}, {"type": "p", "text": "Can reveal:"}, {"type": "ul", "items": [{"text": "continuity relationships;"}, {"text": "usual carers;"}, {"text": "carers who have never attended;"}, {"text": "frequency of each pairing;"}, {"text": "recent familiarity;"}, {"text": "established double-up teams;"}, {"text": "normal run membership."}]}, {"type": "p", "text": "Useful derived measures:"}, {"type": "ul", "items": [{"text": "number of visits by carer and service user;"}, {"text": "percentage of visits delivered by familiar carers;"}, {"text": "days since last visit;"}, {"text": "duration of relationship;"}, {"text": "number of different carers used;"}, {"text": "usual primary and secondary carers."}]}, {"type": "bp", "text": "B. Planner overrides and rota changes"}, {"type": "p", "text": "Potentially the most valuable learning source."}, {"type": "p", "text": "Can reveal:"}, {"type": "ul", "items": [{"text": "recommendations planners routinely reject;"}, {"text": "hidden incompatibilities;"}, {"text": "undocumented preferences;"}, {"text": "practical local knowledge;"}, {"text": "habitual run structures;"}, {"text": "carers who are trusted in difficult packages."}]}, {"type": "p", "text": "Future requirement:"}, {"type": "p", "text": "Every manual change should capture a structured reason such as:"}, {"type": "ul", "items": [{"text": "continuity;"}, {"text": "service-user preference;"}, {"text": "staff preference;"}, {"text": "transport;"}, {"text": "skill;"}, {"text": "lateness risk;"}, {"text": "team compatibility;"}, {"text": "fairness;"}, {"text": "emergency;"}, {"text": "other."}]}, {"type": "bp", "text": "C. Service-user notes and care-plan preferences"}, {"type": "p", "text": "May contain:"}, {"type": "ul", "items": [{"text": "gender preferences;"}, {"text": "cultural or religious considerations;"}, {"text": "communication needs;"}, {"text": "behavioural considerations;"}, {"text": "known anxieties;"}, {"text": "family requests;"}, {"text": "preferred carers;"}, {"text": "carers not to be used;"}, {"text": "importance of familiarity."}]}, {"type": "p", "text": "This material may be unstructured and sensitive. It should not simply be fed into an optimiser without:"}, {"type": "ul", "items": [{"text": "a defined lawful purpose;"}, {"text": "access controls;"}, {"text": "human confirmation;"}, {"text": "conversion into precise scheduling rules."}]}, {"type": "bp", "text": "D. Complaints, compliments and family communications"}, {"type": "p", "text": "Can identify:"}, {"type": "ul", "items": [{"text": "successful carer relationships;"}, {"text": "interpersonal problems;"}, {"text": "punctuality sensitivities;"}, {"text": "preferred visit patterns;"}, {"text": "continuity concerns;"}, {"text": "communication issues."}]}, {"type": "bp", "text": "E. Incident and safeguarding records"}, {"type": "p", "text": "Could identify genuine assignment risks, but access and use must be tightly governed."}, {"type": "p", "text": "Potential outputs should be restricted to operational rules such as:"}, {"type": "ul", "items": [{"text": "do not allocate;"}, {"text": "requires senior carer;"}, {"text": "requires two carers;"}, {"text": "requires specified competency."}]}, {"type": "p", "text": "The optimiser should not expose unnecessary narrative detail."}, {"type": "bp", "text": "F. Staff supervision and management notes"}, {"type": "p", "text": "May identify:"}, {"type": "ul", "items": [{"text": "pair-working difficulties;"}, {"text": "preferred working patterns;"}, {"text": "reliability;"}, {"text": "local knowledge;"}, {"text": "confidence with specific care needs;"}, {"text": "suitability for complex packages."}]}, {"type": "p", "text": "Again, management judgement should be translated into explicit, reviewable rules rather than opaque AI scoring."}, {"type": "bp", "text": "G. Repeated planner behaviour"}, {"type": "p", "text": "Where written records are incomplete, patterns may reveal:"}, {"type": "ul", "items": [{"text": "carers who are consistently kept together;"}, {"text": "service users consistently assigned to a small group;"}, {"text": "visits consistently moved within a time window;"}, {"text": "preferred territorial groupings;"}, {"text": "implicit balancing of desirable runs."}]}, {"type": "p", "text": "These are hypotheses, not facts, until confirmed by the planning team."}], "subsections": []}, {"id": "sec62", "nav": "6.2 Historical data for hard factors", "group": "Historical data (reference)", "title": "6.2 Historical data for hard factors", "type": "narrative", "intro": [{"type": "bp", "text": "A. CarePlanner visit records"}, {"type": "p", "text": "Expected fields:"}, {"type": "ul", "items": [{"text": "service-user identifier;"}, {"text": "visit date;"}, {"text": "scheduled start;"}, {"text": "scheduled end;"}, {"text": "actual start and end, where available;"}, {"text": "visit duration;"}, {"text": "assigned carers;"}, {"text": "number of carers required;"}, {"text": "visit status;"}, {"text": "cancellation;"}, {"text": "missed or late status;"}, {"text": "branch or territory."}]}, {"type": "bp", "text": "B. Staff master data"}, {"type": "p", "text": "Expected fields:"}, {"type": "ul", "items": [{"text": "staff identifier;"}, {"text": "role;"}, {"text": "active status;"}, {"text": "home or start location;"}, {"text": "branch;"}, {"text": "contract type;"}, {"text": "contracted hours;"}, {"text": "driver status;"}, {"text": "licence status;"}, {"text": "skills;"}, {"text": "competencies;"}, {"text": "competency expiry dates;"}, {"text": "working restrictions."}]}, {"type": "bp", "text": "C. Availability, absence and rota records"}, {"type": "p", "text": "Including:"}, {"type": "ul", "items": [{"text": "normal availability;"}, {"text": "planned shifts;"}, {"text": "annual leave;"}, {"text": "sickness;"}, {"text": "training;"}, {"text": "unavailable periods;"}, {"text": "maximum working periods;"}, {"text": "actual hours worked;"}, {"text": "overtime."}]}, {"type": "bp", "text": "D. Service-user and package records"}, {"type": "p", "text": "Including:"}, {"type": "ul", "items": [{"text": "address;"}, {"text": "geocode;"}, {"text": "active care-package dates;"}, {"text": "recurring visit pattern;"}, {"text": "required duration;"}, {"text": "allowable time window;"}, {"text": "number of carers;"}, {"text": "mandatory competencies;"}, {"text": "fixed exclusions;"}, {"text": "contractual requirements."}]}, {"type": "bp", "text": "E. Vehicle and fleet records"}, {"type": "p", "text": "Including:"}, {"type": "ul", "items": [{"text": "vehicle identifier;"}, {"text": "availability;"}, {"text": "assigned branch;"}, {"text": "normal start location;"}, {"text": "fuel type;"}, {"text": "operating cost;"}, {"text": "mileage;"}, {"text": "maintenance downtime;"}, {"text": "passenger capacity;"}, {"text": "insurance restrictions."}]}, {"type": "bp", "text": "F. Journey and mapping data"}, {"type": "p", "text": "Potential sources:"}, {"type": "ul", "items": [{"text": "Google Maps or another routing API;"}, {"text": "historic scheduled journey time;"}, {"text": "actual GPS or telematics data;"}, {"text": "car mileage logs;"}, {"text": "fuel records;"}, {"text": "postcode and address geocoding."}]}, {"type": "p", "text": "A key question is whether WinServe possesses actual vehicle-location or journey-time data. If not, V1 can use mapping estimates and later compare them with observed outcomes."}, {"type": "bp", "text": "G. Payroll and pay-rule data"}, {"type": "p", "text": "Including:"}, {"type": "ul", "items": [{"text": "hourly pay;"}, {"text": "travel-time pay;"}, {"text": "overtime rates;"}, {"text": "weekend or night enhancements;"}, {"text": "double-up costs;"}, {"text": "minimum paid shift rules;"}, {"text": "mileage reimbursement, where relevant."}]}, {"type": "p", "text": "This allows the system to optimise actual labour cost rather than merely road distance."}, {"type": "bp", "text": "H. Financial and contract data"}, {"type": "p", "text": "Including:"}, {"type": "ul", "items": [{"text": "revenue per visit or care hour;"}, {"text": "commissioned duration;"}, {"text": "branch cost rates;"}, {"text": "vehicle cost;"}, {"text": "unproductive-time cost;"}, {"text": "penalties or commercial consequences of lateness and missed calls."}]}, {"type": "p", "text": "V1 may only need a simplified cost model, but the source data should be identified early."}, {"type": "bp", "text": "I. Actual service-delivery data"}, {"type": "p", "text": "Essential for comparing plan versus reality:"}, {"type": "ul", "items": [{"text": "actual arrival time;"}, {"text": "actual departure time;"}, {"text": "visit completed;"}, {"text": "visit duration;"}, {"text": "reason for delay;"}, {"text": "travel time;"}, {"text": "cancellation;"}, {"text": "no access;"}, {"text": "emergency extension;"}, {"text": "incomplete visit."}]}, {"type": "p", "text": "Without actuals, the product can optimise theoretical schedules but cannot prove operational improvement."}], "subsections": []}, {"id": "summary", "nav": "Review", "group": "Review", "title": "Review your feedback", "type": "summary"}]};
+</script>
+<script>
+
+// ---------------- State ----------------
+const STORAGE_KEY = 'winserve-scheduling-review-v1';
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {answers:{}, pageComments:{}, savedAt:null};
+}
+let STATE = loadState();
+let currentPageId = MODEL.pages[0].id;
+let saveTimer = null;
+
+function persist(){
+  STATE.savedAt = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+  renderNav();
+}
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persist, 350);
+}
+
+// ---------------- DOM helpers ----------------
+function el(tag, attrs, children){
+  const e = document.createElement(tag);
+  attrs = attrs || {};
+  for(const k in attrs){
+    if(k === 'class') e.className = attrs[k];
+    else if(k === 'text') e.textContent = attrs[k];
+    else if(k === 'html') e.innerHTML = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  (children||[]).forEach(c => { if(c) e.appendChild(c); });
+  return e;
+}
+
+function renderListItems(items){
+  const ul = el('ul', {class:'doc-list'});
+  items.forEach(it => {
+    const li = el('li', {text: it.text});
+    if(it.children && it.children.length){
+      li.appendChild(renderListItems(it.children));
+    }
+    ul.appendChild(li);
+  });
+  return ul;
+}
+
+function renderContentBlocks(blocks){
+  const frag = document.createDocumentFragment();
+  (blocks||[]).forEach(b => {
+    if(b.type === 'p'){ frag.appendChild(el('p', {text:b.text})); }
+    else if(b.type === 'bp'){ frag.appendChild(el('div', {class:'bold-note', text:b.text})); }
+    else if(b.type === 'ul'){ frag.appendChild(renderListItems(b.items)); }
+  });
+  return frag;
+}
+
+// ---------------- Answer accessors ----------------
+function getAssumption(id){ return STATE.answers[id] || {status:'', comment:''}; }
+function setAssumption(id, patch){
+  STATE.answers[id] = Object.assign(getAssumption(id), patch);
+  scheduleSave();
+}
+function getQAnswer(id){ return (STATE.answers[id] && STATE.answers[id].text) || ''; }
+function setQAnswer(id, text){
+  STATE.answers[id] = {text};
+  scheduleSave();
+}
+function getPageComment(pid){ return STATE.pageComments[pid] || ''; }
+function setPageComment(pid, text){
+  STATE.pageComments[pid] = text;
+  scheduleSave();
+}
+
+// ---------------- Page renderers ----------------
+function pageComment(page){
+  const wrap = el('div', {class:'page-comment'});
+  wrap.appendChild(el('h4', {text:'General comments on this page'}));
+  const ta = el('textarea', {placeholder:'Anything else on this page you want to flag, question, or correct...'});
+  ta.value = getPageComment(page.id);
+  ta.addEventListener('input', () => setPageComment(page.id, ta.value));
+  wrap.appendChild(ta);
+  return wrap;
+}
+
+function questionCard(qid, qtext, bullets){
+  const card = el('card' in {} ? 'div' : 'div', {class:'card'});
+  card.appendChild(el('div', {class:'q-text', text:qtext}));
+  if(bullets && bullets.length){
+    const ul = el('ul', {class:'q-bullets'});
+    bullets.forEach(t => ul.appendChild(el('li', {text:t})));
+    card.appendChild(ul);
+  }
+  card.appendChild(el('div', {class:'answer-label', text:'Your answer / notes'}));
+  const ta = el('textarea', {placeholder:'Type your answer here...'});
+  ta.value = getQAnswer(qid);
+  ta.addEventListener('input', () => setQAnswer(qid, ta.value));
+  card.appendChild(ta);
+  return card;
+}
+
+function assumptionCard(item, groupId){
+  const card = el('div', {class:'card assumption-card'});
+  card.appendChild(el('div', {class:'q-text', text: item.text}));
+  if(item.why) card.appendChild(el('div', {class:'why', text: 'Why it matters: ' + item.why}));
+  const state = getAssumption(item.id);
+  const row = el('div', {class:'status-row'});
+  const opts = [['agree','Agree'],['partial','Partially — needs discussion'],['challenge','Disagree / not correct']];
+  opts.forEach(([v,label]) => {
+    const o = el('div', {class:'status-opt' + (state.status===v ? ' sel':''), 'data-v':v, text:label});
+    o.addEventListener('click', () => {
+      setAssumption(item.id, {status:v});
+      Array.from(row.children).forEach(c => c.classList.toggle('sel', c.getAttribute('data-v')===v));
+    });
+    row.appendChild(o);
+  });
+  card.appendChild(row);
+  card.appendChild(el('div', {class:'answer-label', text:'Comment (optional)'}));
+  const ta = el('textarea', {placeholder:'Add context, an exception, or a correction...'});
+  ta.value = state.comment || '';
+  ta.addEventListener('input', () => setAssumption(item.id, {comment: ta.value}));
+  card.appendChild(ta);
+  return card;
+}
+
+function renderNarrative(page, root){
+  root.appendChild(el('div', {class:'page-kicker', text:'For your information'}));
+  root.appendChild(el('h1', {class:'page-title', text: page.title}));
+  if(page.intro && page.intro.length){
+    root.appendChild(renderContentBlocks(page.intro));
+  }
+  (page.subsections||[]).forEach(sub => {
+    const s = el('div', {class:'subsection'});
+    s.appendChild(el('h3', {text: sub.title}));
+    s.appendChild(renderContentBlocks(sub.blocks));
+    root.appendChild(s);
+  });
+  root.appendChild(pageComment(page));
+}
+
+function renderAssumptions(page, root){
+  root.appendChild(el('div', {class:'page-kicker', text:'Please confirm or challenge each of these'}));
+  root.appendChild(el('h1', {class:'page-title', text: page.title}));
+  if(page.intro && page.intro.length) root.appendChild(renderContentBlocks(page.intro));
+  root.appendChild(el('div', {class:'callout warn', text:'These are our working assumptions, not confirmed facts. For each one: Agree, Partially agree (needs discussion), or Disagree. Add a comment wherever useful.'}));
+  (page.groups||[]).forEach(g => {
+    const s = el('div', {class:'subsection'});
+    s.appendChild(el('h3', {text: g.title}));
+    g.items.forEach(item => s.appendChild(assumptionCard(item, g.id)));
+    root.appendChild(s);
+  });
+  root.appendChild(pageComment(page));
+}
+
+function renderQuestions(page, root){
+  root.appendChild(el('div', {class:'page-kicker', text:'Open questions for the team'}));
+  root.appendChild(el('h1', {class:'page-title', text: page.title}));
+  if(page.intro && page.intro.length) root.appendChild(renderContentBlocks(page.intro));
+  (page.subsections||[]).forEach(sub => {
+    const s = el('div', {class:'subsection'});
+    s.appendChild(el('h3', {text: sub.title}));
+    sub.blocks.forEach(b => {
+      if(b.type === 'note'){ s.appendChild(el('div', {class:'note-text', text:b.text})); }
+      else { s.appendChild(questionCard(b.id, b.question, b.bullets)); }
+    });
+    root.appendChild(s);
+  });
+  root.appendChild(pageComment(page));
+}
+
+function renderFunction(page, root){
+  root.appendChild(el('div', {class:'page-kicker', text:'Proposed V1 function'}));
+  root.appendChild(el('h1', {class:'page-title', text: page.title}));
+  const badges = el('div', {class:'func-badges'});
+  badges.appendChild(el('div', {class:'badge', text:'Part of the MECE V1 scope'}));
+  root.appendChild(badges);
+  const s = el('div', {class:'subsection'});
+  s.appendChild(el('h3', {text:'Summary'}));
+  s.appendChild(renderContentBlocks(page.summary));
+  root.appendChild(s);
+  if(page.hard){
+    const box = el('div', {class:'constraint-box hard'});
+    box.appendChild(el('h4', {text:'Hard constraints — must never be violated'}));
+    box.appendChild(renderContentBlocks(page.hard));
+    root.appendChild(box);
+  }
+  if(page.soft){
+    const box = el('div', {class:'constraint-box soft'});
+    box.appendChild(el('h4', {text:'Soft constraints — optimise, but may compromise'}));
+    box.appendChild(renderContentBlocks(page.soft));
+    root.appendChild(box);
+  }
+  if(page.questions && page.questions.length){
+    const qs = el('div', {class:'subsection'});
+    qs.appendChild(el('h3', {text:'Key questions — please answer'}));
+    page.questions.forEach(q => qs.appendChild(questionCard(q.id, q.text, null)));
+    root.appendChild(qs);
+  }
+  root.appendChild(pageComment(page));
+}
+
+function countTotals(){
+  let assumptionIds = [], questionIds = [];
+  MODEL.pages.forEach(p => {
+    if(p.type === 'assumptions') p.groups.forEach(g => g.items.forEach(i => assumptionIds.push(i.id)));
+    if(p.type === 'questions') p.subsections.forEach(s => s.blocks.forEach(b => { if(b.type==='q') questionIds.push(b.id); }));
+    if(p.type === 'function') p.questions.forEach(q => questionIds.push(q.id));
+  });
+  return {assumptionIds, questionIds};
+}
+const TOTALS = countTotals();
+
+function pageStats(page){
+  let total = 0, done = 0;
+  if(page.type === 'assumptions'){
+    page.groups.forEach(g => g.items.forEach(i => { total++; if(getAssumption(i.id).status) done++; }));
+  } else if(page.type === 'questions'){
+    page.subsections.forEach(s => s.blocks.forEach(b => { if(b.type==='q'){ total++; if(getQAnswer(b.id).trim()) done++; } }));
+  } else if(page.type === 'function'){
+    page.questions.forEach(q => { total++; if(getQAnswer(q.id).trim()) done++; });
+  }
+  return {total, done};
+}
+
+function renderNav(){
+  const nav = document.getElementById('navlist');
+  nav.innerHTML = '';
+  let lastGroup = '__none__';
+  MODEL.pages.forEach(p => {
+    if(p.group !== lastGroup){
+      nav.appendChild(el('div', {class:'navgroup-label', text: p.group}));
+      lastGroup = p.group;
+    }
+    const stats = pageStats(p);
+    const isDone = stats.total > 0 && stats.done === stats.total;
+    const item = el('div', {class:'navitem' + (p.id===currentPageId?' active':'') + (isDone?' done':'')});
+    item.appendChild(el('div', {class:'dot'}));
+    const label = el('div', {text: p.nav});
+    item.appendChild(label);
+    if(stats.total){
+      item.appendChild(el('div', {style:'margin-left:auto;font-size:11px;opacity:.75', text: stats.done+'/'+stats.total}));
+    }
+    item.addEventListener('click', () => { navigateTo(p.id); });
+    nav.appendChild(item);
+  });
+}
+
+function renderSummaryPage(page, root){
+  root.appendChild(el('div', {class:'page-kicker', text:'Review before you send this back'}));
+  root.appendChild(el('h1', {class:'page-title', text: 'Review your feedback'}));
+  root.appendChild(el('p', {class:'intro-block', text:'Check your progress below. Your answers are saved automatically in this browser as you go.'}));
+
+  const doneA = TOTALS.assumptionIds.filter(id => getAssumption(id).status).length;
+  const doneQ = TOTALS.questionIds.filter(id => getQAnswer(id).trim()).length;
+  const grid = el('div', {class:'summary-grid'});
+  grid.appendChild(el('div', {class:'summary-stat'}, [el('div',{class:'num', text: doneA+'/'+TOTALS.assumptionIds.length}), el('div',{class:'lbl', text:'Assumptions confirmed'})]));
+  grid.appendChild(el('div', {class:'summary-stat'}, [el('div',{class:'num', text: doneQ+'/'+TOTALS.questionIds.length}), el('div',{class:'lbl', text:'Questions answered'})]));
+  const commentCount = Object.values(STATE.pageComments).filter(c => c && c.trim()).length;
+  grid.appendChild(el('div', {class:'summary-stat'}, [el('div',{class:'num', text: String(commentCount)}), el('div',{class:'lbl', text:'Page comments added'})]));
+  root.appendChild(grid);
+
+  const list = el('div', {class:'page-check-list'});
+  MODEL.pages.forEach(p => {
+    if(p.id === 'summary') return;
+    const stats = pageStats(p);
+    const row = el('div', {class:'page-check-row'});
+    row.appendChild(el('div', {text: p.nav}));
+    let pillClass = 'empty', pillText = 'Reference only';
+    if(stats.total){
+      if(stats.done === 0){ pillClass='empty'; pillText='Not started'; }
+      else if(stats.done < stats.total){ pillClass='partial'; pillText=stats.done+'/'+stats.total; }
+      else { pillClass='complete'; pillText='Complete'; }
+    } else if(getPageComment(p.id).trim()){
+      pillClass='partial'; pillText='Comment added';
+    }
+    row.appendChild(el('div', {class:'pill '+pillClass, text:pillText}));
+    row.addEventListener('click', () => navigateTo(p.id));
+    list.appendChild(row);
+  });
+  root.appendChild(list);
+
+  const actions = el('div', {class:'export-actions'});
+  const resetBtn = el('button', {class:'btn', text:'Reset all my answers'});
+  resetBtn.addEventListener('click', () => {
+    if(confirm('This clears every answer and comment you have entered in this browser. Continue?')){
+      STATE = {answers:{}, pageComments:{}, savedAt:null};
+      persist();
+      renderPage(currentPageId);
+    }
+  });
+  actions.appendChild(resetBtn);
+  root.appendChild(actions);
+}
+
+// ---------------- Navigation / render ----------------
+function renderPage(pageId){
+  currentPageId = pageId;
+  const page = MODEL.pages.find(p => p.id === pageId);
+  const root = document.getElementById('liveArea');
+  root.innerHTML = '';
+  document.getElementById('topbarTitle').textContent = page.nav;
+  if(page.type === 'narrative') renderNarrative(page, root);
+  else if(page.type === 'assumptions') renderAssumptions(page, root);
+  else if(page.type === 'questions') renderQuestions(page, root);
+  else if(page.type === 'function') renderFunction(page, root);
+  else if(page.type === 'summary') renderSummaryPage(page, root);
+  window.scrollTo(0,0);
+  renderNav();
+  if(window.innerWidth <= 860){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarScrim').classList.remove('open');
+  }
+}
+function navigateTo(pageId){ renderPage(pageId); }
+
+// ---------------- Init ----------------
+document.getElementById('menuBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarScrim').classList.add('open');
+});
+document.getElementById('sidebarScrim').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarScrim').classList.remove('open');
+});
+renderPage(MODEL.pages[0].id);
+
+</script>
+</body>
+</html>

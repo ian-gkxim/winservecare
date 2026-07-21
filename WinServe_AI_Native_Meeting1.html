@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinServe Care × GKIM — Becoming an AI-Native Care Provider</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#142722; --ink-soft:#37493F; --muted:#5C6E66;
+  --bg:#F6F8F4; --surface:#FFFFFF; --surface-2:#EEF3EE;
+  --teal:#0F8A76; --teal-deep:#0B5F53; --teal-tint:#E3F1ED;
+  --amber:#C98A12; --amber-tint:#FBF3E0;
+  --line:#DBE3DC; --line-strong:#C4D0C6;
+  --radius:14px;
+  --font-display:"Bricolage Grotesque",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important}}
+body{font-family:var(--font-body);background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px}
+a{color:var(--teal-deep)}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+h1,h2,h3{font-family:var(--font-display);line-height:1.12;letter-spacing:-.01em}
+h2{font-size:clamp(26px,3.4vw,36px);font-weight:640;margin-bottom:14px}
+h3{font-size:19px;font-weight:600}
+section{padding:72px 0;border-top:1px solid var(--line)}
+.lede{font-size:17.5px;color:var(--ink-soft);max-width:64ch}
+.note{font-size:13.5px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.pill{display:inline-block;font-family:var(--font-mono);font-size:11.5px;padding:3px 10px;border-radius:999px;background:var(--teal-tint);color:var(--teal-deep);letter-spacing:.04em}
+.pill.warn{background:var(--amber-tint);color:var(--amber)}
+/* ---------- top nav ---------- */
+nav#topnav{position:sticky;top:0;z-index:50;background:rgba(246,248,244,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav#topnav .wrap{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+nav#topnav .wrap::-webkit-scrollbar{display:none}
+nav#topnav .brand{font-family:var(--font-display);font-weight:700;font-size:14px;white-space:nowrap;margin-right:10px;color:var(--ink)}
+nav#topnav a.navlink{font-size:13px;color:var(--muted);text-decoration:none;padding:6px 11px;border-radius:999px;white-space:nowrap}
+nav#topnav a.navlink:hover{background:var(--surface-2);color:var(--ink)}
+nav#topnav a.navlink.active{background:var(--teal-deep);color:#fff}
+nav#topnav a.navlink:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+/* ---------- hero ---------- */
+header.hero{padding:76px 0 60px;background:linear-gradient(180deg,#EDF3EC 0%,var(--bg) 100%)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
+.hero h1{font-size:clamp(34px,5vw,54px);font-weight:700}
+.hero h1 em{font-style:normal;color:var(--teal-deep)}
+.hero .lede{margin:18px 0 26px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}
+.hstat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.hstat b{display:block;font-family:var(--font-display);font-size:24px;font-weight:650;color:var(--teal-deep)}
+.hstat span{font-size:12px;color:var(--muted);line-height:1.35;display:block}
+/* graph animation */
+#heroGraph .edge{stroke:var(--line-strong);stroke-width:1.4;stroke-dasharray:200;stroke-dashoffset:200;animation:draw 2.4s ease forwards}
+#heroGraph .node{opacity:0;animation:pop .5s ease forwards}
+#heroGraph text{font-family:var(--font-mono);font-size:9.5px;fill:var(--ink-soft)}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+#heroGraph .hub{animation:pulse 3s ease-in-out infinite 1.5s}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 rgba(15,138,118,0))}50%{filter:drop-shadow(0 0 9px rgba(15,138,118,.55))}}
+/* ---------- stat band ---------- */
+.statband{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.stat b{font-family:var(--font-display);font-size:30px;font-weight:650;display:block;color:var(--ink)}
+.stat b.teal{color:var(--teal-deep)} .stat b.amber{color:var(--amber)}
+.stat span{font-size:13px;color:var(--muted);display:block;line-height:1.4;margin-top:4px}
+.bars{margin-top:26px}
+.bar-row{display:grid;grid-template-columns:220px 1fr 64px;gap:12px;align-items:center;margin-bottom:12px;font-size:14px}
+.bar-track{background:var(--surface-2);border-radius:999px;height:14px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px;background:var(--teal);width:0;transition:width 1s ease}
+.bar-fill.amber{background:var(--amber)}
+.bar-val{font-family:var(--font-mono);font-size:13px;text-align:right;color:var(--ink-soft)}
+/* ---------- value chain ---------- */
+.chain{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chain button{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:9px 14px;font-size:13.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;transition:all .15s}
+.chain button .n{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.chain button:hover{border-color:var(--teal)}
+.chain button.active{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff}
+.chain button.active .n{color:#BFE3DB}
+.chain-detail{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:var(--radius);padding:22px;min-height:150px}
+.chain-detail h3{margin-bottom:6px}
+.chain-detail .tagline{font-size:13px;color:var(--muted);margin-bottom:12px}
+.chain-detail ul{margin:8px 0 0 18px;font-size:14.5px;color:var(--ink-soft)}
+.chain-detail li{margin-bottom:5px}
+.chain-kpi{display:inline-block;margin-top:14px;font-family:var(--font-mono);font-size:12.5px;background:var(--teal-tint);color:var(--teal-deep);padding:5px 12px;border-radius:8px}
+/* ---------- assets tabs ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.tabs button{border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:500;color:var(--ink-soft)}
+.tabs button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabpane{display:none;margin-top:18px}
+.tabpane.show{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+.tabpane .card ul{margin:10px 0 0 18px;font-size:14.5px;color:var(--ink-soft)}
+.tabpane .card li{margin-bottom:5px}
+.graph-svg text{font-family:var(--font-mono);font-size:10px;fill:var(--ink-soft)}
+.graph-svg .spoke{stroke:var(--line-strong);stroke-width:1.2}
+.graph-svg .leaf{fill:var(--surface);stroke:var(--teal);stroke-width:1.4}
+.graph-svg .centre{fill:var(--teal-deep)}
+.graph-svg .centre-label{fill:#fff;font-weight:500;font-size:11px}
+/* ---------- process hierarchy ---------- */
+.proc{margin-top:26px;display:grid;gap:12px}
+.proc .lvl{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:18px 20px}
+.proc .lvl h3{display:flex;align-items:center;gap:10px;font-size:16px}
+.proc .lvl h3 .pill{font-size:10.5px}
+.proc .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.proc .row span{font-size:13px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--ink-soft)}
+.proc .row span.hot{background:var(--teal-tint);border-color:var(--teal);color:var(--teal-deep)}
+/* ---------- AI layers ---------- */
+.layers{margin-top:26px;display:grid;gap:10px}
+.layer{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.layer > button{width:100%;display:flex;align-items:center;gap:14px;background:none;border:none;padding:16px 20px;text-align:left}
+.layer .ln{font-family:var(--font-mono);font-size:12px;color:#fff;background:var(--teal-deep);border-radius:8px;padding:4px 9px;flex-shrink:0}
+.layer[data-risk="low"] .ln{background:#5FA88F}
+.layer[data-risk="mid"] .ln{background:var(--teal-deep)}
+.layer[data-risk="exec"] .ln{background:var(--ink)}
+.layer .lt{font-family:var(--font-display);font-weight:600;font-size:16.5px;flex:1}
+.layer .ls{font-size:12.5px;color:var(--muted);display:none}
+.layer .chev{transition:transform .2s;color:var(--muted)}
+.layer.open .chev{transform:rotate(90deg)}
+.layer .body{display:none;padding:0 20px 18px 20px;border-top:1px dashed var(--line)}
+.layer.open .body{display:block}
+.layer .body p{font-size:14.5px;color:var(--ink-soft);margin:12px 0 10px}
+.chipset{display:flex;flex-wrap:wrap;gap:7px}
+.chipset span{font-size:12.5px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--ink-soft)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.theme{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.theme h3{font-size:15.5px;margin-bottom:8px;color:var(--teal-deep)}
+.theme p{font-size:13.5px;color:var(--ink-soft)}
+/* ---------- ROI ---------- */
+.roi{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:26px;align-items:start}
+.roi label{display:block;font-size:13.5px;font-weight:500;margin:16px 0 6px}
+.roi label span{font-family:var(--font-mono);color:var(--teal-deep)}
+.roi input[type=range]{width:100%;accent-color:var(--teal)}
+.roi-out{background:var(--ink);color:#fff;border-radius:var(--radius);padding:26px}
+.roi-out .big{font-family:var(--font-display);font-size:clamp(34px,4vw,46px);font-weight:700;color:#7FD6C2;line-height:1.05}
+.roi-out .sub{font-size:13px;color:#AEC4BB;margin-top:2px}
+.roi-out hr{border:none;border-top:1px solid #2E463F;margin:16px 0}
+.roi-out .row2{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;color:#D8E6E0}
+.roi-out .row2 b{font-family:var(--font-mono);font-weight:500;color:#fff}
+/* ---------- fit ---------- */
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+.fit .card h3{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.fit .card ol{margin-left:18px;font-size:14.5px;color:var(--ink-soft)}
+.fit .card ol li{margin-bottom:10px}
+.fit .card ol li b{color:var(--ink)}
+.callout{margin-top:22px;background:var(--teal-tint);border:1px solid var(--teal);border-radius:var(--radius);padding:24px}
+.callout h3{color:var(--teal-deep);margin-bottom:8px}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.qgrid span{background:var(--surface);border-radius:9px;padding:8px 12px;font-size:13.5px;color:var(--ink-soft)}
+/* ---------- roadmap ---------- */
+.road{margin-top:30px;position:relative;padding-left:26px}
+.road::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line-strong)}
+.phase{position:relative;margin-bottom:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.phase::before{content:"";position:absolute;left:-24px;top:22px;width:12px;height:12px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+.phase .ph{font-family:var(--font-mono);font-size:11.5px;color:var(--teal-deep);letter-spacing:.1em;text-transform:uppercase}
+.phase h3{margin:4px 0 6px}
+.phase p{font-size:14px;color:var(--ink-soft)}
+/* ---------- vision ---------- */
+.graphs7{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.g7{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.g7 h3{font-size:15px;color:var(--teal-deep);margin-bottom:6px}
+.g7 p{font-size:13px;color:var(--muted)}
+.vision-close{margin-top:26px;background:var(--ink);color:#E8F0EC;border-radius:var(--radius);padding:28px}
+.vision-close p{max-width:70ch;font-size:15.5px}
+.vision-close b{color:#7FD6C2}
+/* ---------- sources / footer ---------- */
+footer{padding:44px 0 70px;border-top:1px solid var(--line)}
+footer ul{margin:14px 0 0 18px;font-size:12.5px;color:var(--muted)}
+footer li{margin-bottom:4px}
+/* ---------- responsive ---------- */
+@media(max-width:880px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-svgwrap{display:none}
+  .statband{grid-template-columns:1fr 1fr}
+  .tabpane.show{grid-template-columns:1fr}
+  .themes{grid-template-columns:1fr 1fr}
+  .roi,.fit,.qgrid{grid-template-columns:1fr}
+  .graphs7{grid-template-columns:1fr 1fr}
+  .bar-row{grid-template-columns:130px 1fr 56px;font-size:12.5px}
+  section{padding:52px 0}
+}
+@media(max-width:560px){.themes,.graphs7{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<nav id="topnav" aria-label="Sections">
+  <div class="wrap">
+    <span class="brand">WinServe × GKIM</span>
+    <a class="navlink" href="#company">Company</a>
+    <a class="navlink" href="#sector">Sector</a>
+    <a class="navlink" href="#chain">Value chain</a>
+    <a class="navlink" href="#assets">Assets</a>
+    <a class="navlink" href="#process">Processes</a>
+    <a class="navlink" href="#layers">AI layers</a>
+    <a class="navlink" href="#roi">ROI</a>
+    <a class="navlink" href="#fit">Why now</a>
+    <a class="navlink" href="#roadmap">Roadmap</a>
+    <a class="navlink" href="#vision">Vision</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Meeting 1 · Preparation pack · July 2026</div>
+      <h1>From care provider to <em>AI-native</em> care operator</h1>
+      <p class="lede">WinServe Care Services looks like a conventional, well-run domiciliary care provider. Underneath sits an unusually strong foundation — digital systems, meaningful scale, two-region complexity and an ambitious CEO — for building a durable, AI-driven competitive advantage.</p>
+      <div class="hero-meta">
+        <span class="pill">Domiciliary · Complex · Supported living · Live-in</span>
+        <span class="pill">Leeds & Cornwall</span>
+        <span class="pill">CQC registered</span>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><b>70+</b><span>carers across two regions</span></div>
+        <div class="hstat"><b>9.4/10</b><span>homecare.co.uk review score (74 reviews)</span></div>
+        <div class="hstat"><b>6+</b><span>digital systems already in daily use</span></div>
+      </div>
+    </div>
+    <div class="hero-svgwrap" aria-hidden="true">
+      <svg id="heroGraph" viewBox="0 0 380 360" width="100%" role="img" aria-label="Knowledge graph connecting carers, patients, visits, compliance, community and business around one AI core">
+        <line class="edge" x1="190" y1="180" x2="80"  y2="60"/>
+        <line class="edge" x1="190" y1="180" x2="300" y2="60"/>
+        <line class="edge" x1="190" y1="180" x2="40"  y2="190"/>
+        <line class="edge" x1="190" y1="180" x2="340" y2="190"/>
+        <line class="edge" x1="190" y1="180" x2="90"  y2="310"/>
+        <line class="edge" x1="190" y1="180" x2="290" y2="310"/>
+        <line class="edge" x1="80" y1="60" x2="300" y2="60" style="animation-delay:.8s"/>
+        <line class="edge" x1="40" y1="190" x2="90" y2="310" style="animation-delay:.8s"/>
+        <line class="edge" x1="340" y1="190" x2="290" y2="310" style="animation-delay:.8s"/>
+        <g class="node" style="animation-delay:.3s"><circle cx="80" cy="60" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="80" y="63" text-anchor="middle">Carers</text></g>
+        <g class="node" style="animation-delay:.45s"><circle cx="300" cy="60" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="300" y="63" text-anchor="middle">Patients</text></g>
+        <g class="node" style="animation-delay:.6s"><circle cx="40" cy="190" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="40" y="193" text-anchor="middle">Visits</text></g>
+        <g class="node" style="animation-delay:.75s"><circle cx="340" cy="190" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="340" y="193" text-anchor="middle">CQC</text></g>
+        <g class="node" style="animation-delay:.9s"><circle cx="90" cy="310" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="90" y="313" text-anchor="middle">Community</text></g>
+        <g class="node" style="animation-delay:1.05s"><circle cx="290" cy="310" r="26" fill="#fff" stroke="#0F8A76" stroke-width="1.6"/><text x="290" y="313" text-anchor="middle">Business</text></g>
+        <g class="node hub" style="animation-delay:1.2s"><circle cx="190" cy="180" r="36" fill="#0B5F53"/><text x="190" y="177" text-anchor="middle" fill="#fff" style="fill:#fff;font-size:11px">AI-native</text><text x="190" y="191" text-anchor="middle" style="fill:#9FD9CC;font-size:9px">care OS</text></g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section id="company">
+  <div class="wrap">
+    <div class="eyebrow">01 · The company</div>
+    <h2>Deliberately ordinary on the surface. That's a strength.</h2>
+    <p class="lede">Winserve Care Services Ltd is a CQC-registered, medium-sized provider delivering home care, complex care, supported living, live-in care and specialist support (dementia, mental health, autism, learning disabilities, palliative and respite) across Leeds and Cornwall. It works hand-in-hand with local authorities, city councils and NHS partners, employs a multilingual workforce of 70+ carers, and runs annual enhanced DBS checks across the team.</p>
+    <div class="statband">
+      <div class="stat"><b class="teal">2</b><span>geographically separate regions — Leeds (Morley) and Cornwall (Redruth) — genuine routing and allocation complexity</span></div>
+      <div class="stat"><b class="teal">70+</b><span>carers: enough scale for optimisation gains to be financially meaningful</span></div>
+      <div class="stat"><b class="teal">8+</b><span>service lines from domiciliary visits to 24/7 complex and live-in care</span></div>
+      <div class="stat"><b class="teal">9.4</b><span>review score on homecare.co.uk from 74 family reviews — trust already banked</span></div>
+    </div>
+    <div style="margin-top:26px" class="card">
+      <h3>Existing digital estate — the raw material AI needs</h3>
+      <p class="note" style="margin:6px 0 12px">Most providers this size still run on spreadsheets. WinServe already generates structured operational data every day:</p>
+      <div class="chipset">
+        <span>Nourish — care planning & records</span>
+        <span>QCS — policies & compliance</span>
+        <span>uCheck — DBS & vetting</span>
+        <span>DocuSign — agreements</span>
+        <span>RAM Assist — fleet / assets</span>
+        <span>Online training providers</span>
+        <span>HR systems</span>
+        <span>Accounting integration</span>
+      </div>
+      <p class="note" style="margin-top:14px">The catch: each function is digitised in isolation. The systems don't understand one another — which is precisely the opening for an <b>AI orchestration layer</b>, not another replacement system.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sector">
+  <div class="wrap">
+    <div class="eyebrow">02 · Industry norms</div>
+    <h2>A growing market with a structural workforce squeeze</h2>
+    <p class="lede">The sector context makes operational excellence — not headcount — the binding constraint on growth. Every norm below is a lever AI can move.</p>
+    <div class="statband">
+      <div class="stat"><b class="teal">15,232</b><span>CQC-regulated domiciliary care organisations (Mar 2025), up from 13,733 the year before — competition is intensifying</span></div>
+      <div class="stat"><b>£23.56</b><span>average cost of a homecare hour in 2024/25, up 7% year on year</span></div>
+      <div class="stat"><b class="amber">~10%</b><span>homecare vacancy rate — more than double that of care homes</span></div>
+      <div class="stat"><b class="amber">23.7%</b><span>domiciliary staff turnover — the lowest ever recorded, yet still nearly 1 in 4 leaving each year</span></div>
+    </div>
+    <div class="bars" role="img" aria-label="Bar chart of turnover rates by workforce segment">
+      <h3 style="margin-bottom:14px">Turnover is not evenly distributed — retention is an operations problem</h3>
+      <div class="bar-row"><span>Workers under 25</span><div class="bar-track"><div class="bar-fill amber" data-w="38"></div></div><span class="bar-val">38%</span></div>
+      <div class="bar-row"><span>Zero-hours contracts</span><div class="bar-track"><div class="bar-fill amber" data-w="30.6"></div></div><span class="bar-val">30.6%</span></div>
+      <div class="bar-row"><span>Sector average</span><div class="bar-track"><div class="bar-fill" data-w="23.7"></div></div><span class="bar-val">23.7%</span></div>
+      <div class="bar-row"><span>Workers aged 50+</span><div class="bar-track"><div class="bar-fill" data-w="20"></div></div><span class="bar-val">20%</span></div>
+      <div class="bar-row"><span>Stable hours + training + fair pay</span><div class="bar-track"><div class="bar-fill" data-w="14"></div></div><span class="bar-val">14%</span></div>
+      <p class="note" style="margin-top:10px">Skills for Care, 2025. Providers offering stable hours, training and competitive pay cut turnover to 14% — exactly the conditions better scheduling and workforce intelligence create.</p>
+    </div>
+    <div class="statband" style="margin-top:22px">
+      <div class="stat"><b class="teal">+57%</b><span>more over-65s will need home care by 2038 vs 2018 (DHSC projection)</span></div>
+      <div class="stat"><b class="teal">470k</b><span>additional care posts needed by 2040 — recruitment alone cannot close the gap</span></div>
+      <div class="stat"><b class="amber">74%</b><span>of home care providers cite recruitment difficulty as the reason they can't meet demand</span></div>
+      <div class="stat"><b class="amber">Jul 2025</b><span>care workers removed from the Health & Care visa route — the international recruitment tap is closing</span></div>
+    </div>
+    <p class="note" style="margin-top:18px">Also relevant: 35% of home care staff are on zero-hours contracts; median care worker pay (£12.00/hr, Mar 2025) now trails the National Living Wage trajectory; over half of all CQC-regulated care services are now non-residential — home care has overtaken residential for the first time. Demand is certain. Workforce supply is not. <b>The winners will be the providers who get more care, more retention and more margin out of the workforce they already have.</b></p>
+  </div>
+</section>
+<section id="chain">
+  <div class="wrap">
+    <div class="eyebrow">03 · The value chain</div>
+    <h2>Twelve stages. Every one of them AI-addressable.</h2>
+    <p class="lede">The typical domiciliary care value chain runs from first marketing touch to contract renewal. Select any stage to see where AI removes friction, adds intelligence, or both.</p>
+    <div class="chain" id="chainBtns" role="tablist" aria-label="Value chain stages"></div>
+    <div class="chain-detail" id="chainDetail" role="tabpanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="assets">
+  <div class="wrap">
+    <div class="eyebrow">04 · Key assets</div>
+    <h2>The most valuable assets are intangible — and mostly unmodelled</h2>
+    <p class="lede">WinServe's balance sheet won't show its real assets: relationships, tacit knowledge, trust and evidence. AI's job is to turn each one into a living, queryable model that compounds in value with every visit.</p>
+    <div class="tabs" id="assetTabs" role="tablist" aria-label="Asset categories"></div>
+    <div id="assetPanes"></div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="eyebrow">05 · Process hierarchy</div>
+    <h2>A structured process map for targeting AI precisely</h2>
+    <p class="lede">Organising WinServe's activity as a three-level process hierarchy makes it possible to score every process for AI potential, risk and data readiness — and to sequence the roadmap on evidence rather than instinct.</p>
+    <p class="note" style="margin-top:8px"><span class="pill warn">Placeholder</span>&nbsp; The brief references a GEARS-style hierarchy "based on the attached" — that attachment wasn't included, so the structure below is a working stand-in to be aligned to GEARS before the meeting.</p>
+    <div class="proc">
+      <div class="lvl">
+        <h3><span class="pill">L1 · Govern & assure</span> Direction, quality and compliance</h3>
+        <div class="row"><span class="hot">CQC evidence & inspection readiness</span><span class="hot">Quality assurance & audits</span><span>Safeguarding</span><span>Risk management</span><span>Policy management</span><span>Financial control</span></div>
+      </div>
+      <div class="lvl">
+        <h3><span class="pill">L2 · Operate</span> The core value chain — where care is delivered</h3>
+        <div class="row"><span>Referral & assessment</span><span>Care planning</span><span class="hot">Scheduling & rostering</span><span class="hot">Routing & travel</span><span>Care delivery</span><span class="hot">Monitoring & escalation</span><span>Billing & invoicing</span><span>Renewal & review</span></div>
+      </div>
+      <div class="lvl">
+        <h3><span class="pill">L3 · Enable</span> The capabilities that make operations possible</h3>
+        <div class="row"><span class="hot">Recruitment & onboarding</span><span class="hot">Training & competency</span><span>Rota administration</span><span>Payroll</span><span>Fleet & assets</span><span>IT & data</span><span>Marketing & reputation</span><span class="hot">Workforce wellbeing & retention</span></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">Highlighted processes are the early AI hotspots: high data availability, high frequency, high cost of error — and low clinical risk to begin with.</p>
+  </div>
+</section>
+
+<section id="layers">
+  <div class="wrap">
+    <div class="eyebrow">06 · Scope for AI acceleration</div>
+    <h2>Six layers of intelligence, sequenced by risk and return</h2>
+    <p class="lede">Each layer builds on the data and trust created by the one below it. Expand each to see what it covers.</p>
+    <div class="layers" id="layerList"></div>
+
+    <h3 style="margin-top:40px">Cross-cutting: where AI supports the whole organisation</h3>
+    <div class="themes">
+      <div class="theme"><h3>Reputation</h3><p>Identify delighted families and prompt Google reviews; analyse care notes, emails and calls to predict complaints before they land; continuously assemble inspection-ready CQC evidence; generate case studies, recruitment adverts and local campaigns.</p></div>
+      <div class="theme"><h3>Patients</h3><p>Voice companions, medication reminders, wellbeing check-ins, daily health questionnaires, mood monitoring, translation and accessibility support — augmenting human care, never replacing it.</p></div>
+      <div class="theme"><h3>Families</h3><p>A family portal with visit summaries, medication updates, missed-visit alerts, consented photos, secure messaging and milestone tracking. Families want reassurance as much as information — this is a chronically underserved area.</p></div>
+      <div class="theme"><h3>Efficiency</h3><p>Automatic rota generation and route optimisation, voice-to-documentation, care note summarisation, policy and training generation, invoice automation, compliance monitoring — substantially reducing coordinator workload.</p></div>
+      <div class="theme"><h3>Effectiveness</h3><p>Better carer–client matching, improved continuity, earlier deterioration detection, fewer missed visits and medication errors, lower turnover, fewer safeguarding incidents. Efficiency does the same work faster; effectiveness improves outcomes.</p></div>
+      <div class="theme"><h3>Growth</h3><p>Smarter lead qualification, faster onboarding, better enquiry-to-client conversion, capacity forecasting for expansion, demonstrable quality metrics and data-driven differentiation in tenders and commissioner reporting.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="roi">
+  <div class="wrap">
+    <div class="eyebrow">07 · The arithmetic</div>
+    <h2>Small savings per carer compound fast at this scale</h2>
+    <p class="lede">Move the sliders to test the sensitivity. The base case is deliberately conservative: administrative time only, before any gains from retention, continuity, travel or quality.</p>
+    <div class="roi">
+      <div class="card">
+        <label for="rCarers">Carers <span id="vCarers">70</span></label>
+        <input type="range" id="rCarers" min="20" max="300" step="5" value="70">
+        <label for="rMins">Minutes saved per carer per day <span id="vMins">10</span></label>
+        <input type="range" id="rMins" min="2" max="40" step="1" value="10">
+        <label for="rDays">Working days per year <span id="vDays">310</span></label>
+        <input type="range" id="rDays" min="200" max="365" step="5" value="310">
+        <label for="rRate">Value per hour (£) <span id="vRate">23.56</span></label>
+        <input type="range" id="rRate" min="12" max="35" step="0.5" value="23.5">
+        <p class="note" style="margin-top:16px">£23.56 is the 2024/25 average cost of a delivered homecare hour — time released is either billable capacity or reduced cost, depending on how it's redeployed.</p>
+      </div>
+      <div class="roi-out" aria-live="polite">
+        <div class="big" id="oHours">—</div>
+        <div class="sub">carer-hours released per year</div>
+        <hr>
+        <div class="row2"><span>Hours per day</span><b id="oDaily">—</b></div>
+        <div class="row2"><span>Equivalent full-time carers</span><b id="oFTE">—</b></div>
+        <div class="row2"><span>Annual value at chosen rate</span><b id="oValue">—</b></div>
+        <hr>
+        <p style="font-size:13px;color:#AEC4BB">Before counting: reduced travel miles, lower overtime, fewer missed visits, improved retention (recruiting one carer costs thousands), stronger CQC evidence and commissioner confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="fit">
+  <div class="wrap">
+    <div class="eyebrow">08 · Why WinServe, why GKIM, why now</div>
+    <h2>An unusually good candidate for AI-native transformation</h2>
+    <p class="lede">Most software vendors would sell WinServe another care management system. The real opportunity is different — and the company's specific characteristics make it viable.</p>
+    <div class="fit">
+      <div class="card">
+        <h3>✓ What sets them apart</h3>
+        <ol>
+          <li><b>An unusually ambitious CEO.</b> The discovery call wasn't "can AI write care plans?" — it was about fundamentally changing how the business operates. Most of the sector is still asking about ChatGPT; this is AI-operations maturity.</li>
+          <li><b>Operations already recognised as the constraint.</b> Most providers believe more carers = more growth. WinServe's leadership sees better operations = more growth. That's systems thinking: better ops → retention, lower travel, better margins, better CQC, happier commissioners.</li>
+          <li><b>Modern digital infrastructure.</b> Nourish, QCS, uCheck, DocuSign, RAM Assist, online training, HR and accounting — AI requires data, and the data sources already exist.</li>
+          <li><b>Meaningful scale.</b> At 70+ carers, optimisation gains are financially significant (see the arithmetic above).</li>
+          <li><b>Two-region complexity.</b> Leeds and Cornwall create genuine routing and allocation challenges — and a proving ground for AI that later scales across branches.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>△ Where the gaps are (each one is the opportunity)</h3>
+        <ol>
+          <li><b>Fragmented technology.</b> Functions are digitised individually — training, scheduling, HR, fleet, care, finance, compliance — but the systems don't understand one another. Opening: an <b>AI orchestration layer</b> over the existing stack, not a rip-and-replace.</li>
+          <li><b>AI not yet embedded in daily operations.</b> Normal for the sector — and it means room to leapfrog competitors rather than catch up with them.</li>
+          <li><b>Service-based differentiation.</b> "Compassion, personalised care, trust" — true, but every provider says it. Imagine instead: <i>"Our AI continuously optimises care delivery — reducing unnecessary travel, improving continuity, identifying risks earlier, and keeping us inspection-ready every day."</i> That claim is defensible because competitors can't copy it quickly.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="callout">
+      <h3>The biggest opportunity is not automation. It's decision support.</h3>
+      <p style="font-size:14.5px;color:var(--ink-soft)">A coordinator's day is a stream of judgement calls made on tacit knowledge that lives in nobody's system. An <b>AI Operations Copilot</b> makes recommendations across all of them — while the human stays in control and accountable.</p>
+      <div class="qgrid">
+        <span>Which carer should visit which client?</span>
+        <span>What happens if someone calls in sick?</span>
+        <span>Can we fit in an emergency package?</span>
+        <span>Will Jane accept another shift?</span>
+        <span>Who is medication competent?</span>
+        <span>Who knows Mrs Smith best?</span>
+        <span>Will this create overtime?</span>
+        <span>Is this travel still economical?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="eyebrow">09 · Roadmap</div>
+    <h2>Five phases, each funding the next</h2>
+    <div class="road">
+      <div class="phase"><div class="ph">Phase 1</div><h3>Operational Intelligence</h3><p>Route optimisation, scheduling, staffing and compliance dashboards. Fast, visible wins on the highest-frequency decisions — the optimisation engine already scoped.</p></div>
+      <div class="phase"><div class="ph">Phase 2</div><h3>Workforce Intelligence</h3><p>Retention and burnout prediction, competency matching, wellbeing signals, recruitment insights. Potentially the highest-ROI area given sector turnover economics.</p></div>
+      <div class="phase"><div class="ph">Phase 3</div><h3>Care Intelligence</h3><p>Risk and deterioration detection, continuity optimisation, family communications, outcome monitoring. Humans remain responsible; AI makes them earlier and better informed.</p></div>
+      <div class="phase"><div class="ph">Phase 4</div><h3>Executive Intelligence</h3><p>An AI COO: daily brief of risks, staffing, expected overtime, financial impact, patients needing review, medication issues, CQC exposure, complaints, revenue forecast and recruitment gaps.</p></div>
+      <div class="phase"><div class="ph">Phase 5</div><h3>Sector Platform</h3><p>Productise the capabilities into a platform other care providers adopt — converting WinServe's operational edge into a second business.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="vision">
+  <div class="wrap">
+    <div class="eyebrow">10 · The long-term opportunity</div>
+    <h2>An AI-native operating system for domiciliary care</h2>
+    <p class="lede">Bigger than adding AI features to a care management system: every operational event feeds a continuously improving knowledge model. Seven interconnected graphs give AI agents a shared understanding of the whole business — enabling optimisation, prediction, quality assurance, compliance and executive decision support from one substrate.</p>
+    <div class="graphs7">
+      <div class="g7"><h3>Patient Graph</h3><p>Conditions, preferences, outcomes, risks, continuity, family context.</p></div>
+      <div class="g7"><h3>Carer Graph</h3><p>Competencies, availability, performance, preferences, training, wellbeing.</p></div>
+      <div class="g7"><h3>Visit Graph</h3><p>Timing, travel, interventions, observations, outcomes.</p></div>
+      <div class="g7"><h3>Operational Graph</h3><p>Routes, schedules, capacity, incidents, costs.</p></div>
+      <div class="g7"><h3>Compliance Graph</h3><p>Policies, training, evidence, audits, CQC requirements.</p></div>
+      <div class="g7"><h3>Community Graph</h3><p>Hospitals, GPs, commissioners, pharmacies, voluntary services, referral relationships.</p></div>
+      <div class="g7"><h3>Business Graph</h3><p>Enquiries, referrals, contracts, profitability, growth opportunities.</p></div>
+    </div>
+    <div class="vision-close">
+      <p><b>The pitch in one sentence:</b> while competitors buy software that digitises paperwork, WinServe builds an operating system that learns — so every visit delivered makes the next one cheaper, safer and better matched, and the advantage compounds where others can't follow.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="eyebrow">Sources & basis</div>
+    <p class="note">Prepared by GKIM for Meeting 1 with WinServe Care Services. Company details from winservecare.co.uk, homecare.co.uk and public profiles (July 2026). Sector norms from Skills for Care (State of the Adult Social Care Sector & Workforce in England 2025; Domiciliary Care Services 2024/25), CQC State of Care 2024/25, The King's Fund Social Care 360, and DHSC publications. Figures are indicative for discussion, not audited.</p>
+    <ul>
+      <li>15,232 CQC-regulated domiciliary organisations (Mar 2025); homecare vacancy ~10%; turnover 23.7% — Skills for Care / CQC</li>
+      <li>£23.56 average homecare hour 2024/25 (+7% YoY) — DHSC</li>
+      <li>Turnover: under-25s 38%, zero-hours 30.6%, stable-conditions settings 14% — Skills for Care 2025</li>
+      <li>+57% over-65s needing home care by 2038; 470,000 additional posts by 2040 — DHSC / Skills for Care</li>
+      <li>Care workers removed from Health & Care visa route, July 2025 — Home Office</li>
+    </ul>
+  </div>
+</footer>
+<script>
+/* ---------------- Value chain ---------------- */
+const CHAIN = [
+ ["Marketing","Where growth begins — and where AI content is cheapest to deploy",
+  ["Generate local campaigns, case studies, newsletters and recruitment adverts","Track review sentiment across Google, Facebook and word-of-mouth channels","Target commissioners and self-funders with evidence-led messaging"],"Cost per qualified enquiry"],
+ ["Referral Generation","Hospitals, GPs, councils and families — a relationship graph",
+  ["Score which referral sources convert to long-term, profitable packages","Automated, high-quality commissioner reporting builds referral trust","Faster, structured responses to tenders and framework calls"],"Referral → assessment conversion"],
+ ["Assessment","First structured data capture about the person",
+  ["Voice-to-documentation during home assessments","Auto-draft needs summaries and risk flags for human review","Consistency checks against CQC expectations from day one"],"Assessment turnaround time"],
+ ["Care Planning","Where the Patient Graph is born",
+  ["Draft person-centred plans from assessment data for coordinator approval","Flag missing risk assessments, consents and preferences","Keep plans live — updated from visit observations, not annual reviews"],"Plan completeness & currency"],
+ ["Staff Recruitment","The sector's #1 constraint (74% cite it)",
+  ["Screen and rank applicants against competency needs and geography","Forecast hiring needs from demand pipeline and attrition prediction","Auto-generate compliant adverts and speed up time-to-offer"],"Time to safe deployment"],
+ ["Training & Compliance","Evidence that must exist before care can",
+  ["Personalised training paths from competency-gap analysis","Auto-chase expiring certificates, DBS renewals and supervisions","Generate and version policies; map them to CQC evidence lines"],"% workforce fully compliant"],
+ ["Scheduling","The daily optimisation problem at the heart of the business",
+  ["Constraint-based rota generation: skills, continuity, travel, contracts","Automatic rota repair when carers call in sick","Predict lateness, cancellations and staffing shortages before they bite"],"Continuity score & rota stability"],
+ ["Care Delivery","Where all value is ultimately created",
+  ["Voice-first care notes — carers talk, AI documents","Real-time guidance: medication prompts, task checklists, escalation paths","Translation and communication support for a multilingual workforce"],"On-time visit rate"],
+ ["Monitoring","From retrospective notes to live signal",
+  ["Deterioration, falls-risk, isolation and nutrition signals from visit data","Missed-visit detection and automatic escalation suggestions","Family updates generated from consented visit summaries"],"Early interventions per month"],
+ ["Billing","Margin leaks quietly here",
+  ["Auto-reconcile planned vs delivered minutes before invoicing","Flag under-billing, unbilled travel and contract-rate mismatches","Commissioner-ready reporting packs on demand"],"Revenue leakage recovered"],
+ ["Quality Assurance","Always inspection-ready, not annually panicked",
+  ["Continuous audit of notes, medication records and incidents","Complaint prediction from care notes, emails and call transcripts","A living CQC evidence pack, assembled as a by-product of operating"],"Days to produce CQC evidence"],
+ ["Renewal / Additional Care","Retention of clients, not just staff",
+  ["Detect changing needs early — propose reviews and additional packages","Churn-risk signals from visit patterns and family sentiment","Demonstrable outcomes data to support renewals and rate negotiations"],"Client lifetime value"]
+];
+const btnWrap=document.getElementById("chainBtns"),detail=document.getElementById("chainDetail");
+CHAIN.forEach((s,i)=>{
+  const b=document.createElement("button");
+  b.setAttribute("role","tab");
+  b.innerHTML=`<span class="n">${String(i+1).padStart(2,"0")}</span>${s[0]}`;
+  b.addEventListener("click",()=>selectChain(i));
+  btnWrap.appendChild(b);
+});
+function selectChain(i){
+  [...btnWrap.children].forEach((b,j)=>b.classList.toggle("active",j===i));
+  const [name,tag,items,kpi]=CHAIN[i];
+  detail.innerHTML=`<h3>${String(i+1).padStart(2,"0")} · ${name}</h3><div class="tagline">${tag}</div>
+    <ul>${items.map(x=>`<li>${x}</li>`).join("")}</ul>
+    <span class="chain-kpi">Metric to move: ${kpi}</span>`;
+}
+selectChain(6); /* open on Scheduling — the heart of the pitch */
+
+/* ---------------- Asset tabs ---------------- */
+function radial(centre,leaves){
+  const n=leaves.length,R=118,r=150,cx=190,cy=165;
+  let spokes="",nodes="";
+  leaves.forEach((l,i)=>{
+    const a=-Math.PI/2+i*(2*Math.PI/n),x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);
+    spokes+=`<line class="spoke" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`;
+    const w=Math.max(52,l.length*6.4);
+    nodes+=`<g><rect class="leaf" x="${x-w/2}" y="${y-12}" width="${w}" height="24" rx="12"/><text x="${x}" y="${y+3.5}" text-anchor="middle">${l}</text></g>`;
+  });
+  return `<svg class="graph-svg" viewBox="0 0 380 330" width="100%" role="img" aria-label="${centre} knowledge graph">
+    ${spokes}${nodes}
+    <circle class="centre" cx="${cx}" cy="${cy}" r="42"/>
+    <text class="centre-label" x="${cx}" y="${cy+4}" text-anchor="middle" style="fill:#fff">${centre}</text></svg>`;
+}
+const ASSETS=[
+ ["Carer workforce","A knowledge graph, not a staff list",
+  "Seventy-plus people whose skills, availability and relationships determine everything. Modelled as a graph, the workforce becomes searchable and optimisable: who can safely cover this visit, tonight, within 20 minutes' travel?",
+  ["Skills","Experience","Availability","Location","Reliability","Specialisms","Personality","Languages","Driving"],
+  radial("Carer",["Skills","Experience","Availability","Location","Reliability","Specialisms","Personality","Languages","Driving"])],
+ ["Patients","The richest — and most sensitive — asset",
+  "Every client is a constellation of clinical, personal and contextual factors. A Patient Graph makes continuity, matching and risk detection systematic instead of memory-dependent.",
+  ["Demographics","Diagnoses","Medications","Routines","Mobility","Risk","Communication","Preferences","Family","Home","Pets","Culture","Continuity"],
+  radial("Patient",["Demographics","Diagnoses","Medications","Routines","Mobility","Risk","Preferences","Family","Home","Culture"])],
+ ["Brand & trust","Possibly the single most valuable asset",
+  "Trust is the currency of care — and AI strengthens it with every stakeholder by making quality visible and verifiable: fewer missed visits, faster answers, evidence on demand.",
+  ["Commissioners","Families","Regulators (CQC)","Carers","GPs","Hospitals"],
+  radial("Trust",["Commissioners","Families","CQC","Carers","GPs","Hospitals"])],
+ ["Operational knowledge","Years of knowing — currently in coordinators' heads",
+  "Which carers suit which clients. Which visits always run late. Which roads are terrible. Who dislikes mornings. Who responds to humour. This knowledge rarely exists in systems — but it can be scraped from historical data and preserved so it survives staff changes and scales across regions.",
+  ["Carer–client fit","Late-running visits","Bad roads","Timing preferences","What works with whom"],
+  radial("Tacit knowledge",["Carer–client fit","Late visits","Bad roads","Preferences","What works"])],
+ ["Compliance evidence","A huge asset that deserves its own documentation graph",
+  "Policies, training, incidents, medication records, audits, supervisions, risk assessments, safeguarding and care notes — linked into a reporting factory that generates CQC evidence continuously. Inspection-ready every day, not once a year.",
+  ["Policies","Training","Incidents","Medication","Audits","Supervision","Risk assessments","Safeguarding","Care notes"],
+  radial("CQC evidence",["Policies","Training","Incidents","Medication","Audits","Supervision","Risk","Safeguarding","Notes"])],
+ ["Local reputation","Increasingly what determines growth",
+  "Reviews, hospital and GP recommendations, word of mouth, Facebook and Google. AI monitors sentiment, prompts delighted families for reviews at the right moment, and recommends policies and activities that compound reputation in each region.",
+  ["Reviews","Hospital recs","GP recs","Word of mouth","Facebook","Google"],
+  radial("Reputation",["Reviews","Hospitals","GPs","Word of mouth","Facebook","Google"])]
+];
+const tabs=document.getElementById("assetTabs"),panes=document.getElementById("assetPanes");
+ASSETS.forEach((a,i)=>{
+  const b=document.createElement("button");b.textContent=a[0];b.setAttribute("role","tab");
+  b.addEventListener("click",()=>selectAsset(i));tabs.appendChild(b);
+  const p=document.createElement("div");p.className="tabpane";p.setAttribute("role","tabpanel");
+  p.innerHTML=`<div class="card"><h3>${a[0]}</h3><p class="note" style="margin:4px 0 10px">${a[1]}</p>
+    <p style="font-size:14.5px;color:var(--ink-soft)">${a[2]}</p>
+    <ul>${a[3].map(x=>`<li>${x}</li>`).join("")}</ul></div>
+    <div class="card" style="background:var(--surface-2)">${a[4]}</div>`;
+  panes.appendChild(p);
+});
+function selectAsset(i){
+  [...tabs.children].forEach((b,j)=>b.classList.toggle("active",j===i));
+  [...panes.children].forEach((p,j)=>p.classList.toggle("show",j===i));
+}
+selectAsset(0);
+
+/* ---------------- AI layers ---------------- */
+const LAYERS=[
+ ["1","Administrative AI","Lowest risk. Already saves hundreds of hours.","low",
+  "Automate the paperwork that surrounds care without touching care itself.",
+  ["Scheduling admin","Emails","Documents","Invoices","Payroll support","Meeting notes","Policy writing","Training material"]],
+ ["2","Operational Intelligence","This is where value really appears.","mid",
+  "The optimisation engine already discussed: the daily allocation problem solved continuously, with the reasoning explained.",
+  ["Optimal routes","Predicting lateness","Predicting cancellations","Predicting staffing shortages","Carer matching","Travel optimisation","Automatic rota repair"]],
+ ["3","Care Intelligence","AI begins helping coordinators. Humans remain responsible.","mid",
+  "Signals from care data surfaced early enough to act on — recommendations, never autonomous clinical decisions.",
+  ["Deterioration detection","Medication reminders","Risk scoring","Falls prediction","Isolation detection","Nutrition concerns","Missed-visit detection","Pressure ulcer risk","Escalation suggestions"]],
+ ["4","Workforce Intelligence","Possibly the highest-ROI layer, given 23.7% sector turnover.","mid",
+  "Keep the carers you have. Every point of turnover avoided saves recruitment, training and continuity costs.",
+  ["Burnout prediction","Resignation prediction","Training recommendations","Competency gaps","Performance coaching","Recognition","Retention"]],
+ ["5","Business Intelligence","Answers the questions the P&L can't.","mid",
+  "Profitability and capacity understood at the level decisions are actually made: per rota, per patient, per postcode.",
+  ["Which referrals become long-term clients?","Which commissioners generate profit?","Travel cost by postcode","Utilisation","Profit by rota","Profit by patient","Overtime prediction","Capacity forecasting","Hiring forecasts"]],
+ ["6","Executive Intelligence","AI becomes the COO. An operating dashboard for the whole business.","exec",
+  "A daily brief that reads the entire organisation:",
+  ["Today's risks","Today's staffing","Expected overtime","Financial impact","Patients needing review","Medication issues","CQC risks","Complaints","Revenue forecast","Recruitment gaps"]]
+];
+const ll=document.getElementById("layerList");
+LAYERS.forEach((L,i)=>{
+  const d=document.createElement("div");d.className="layer";d.dataset.risk=L[3];
+  d.innerHTML=`<button aria-expanded="false"><span class="ln">L${L[0]}</span><span class="lt">${L[1]}</span><span class="chev">▸</span></button>
+  <div class="body"><p><b>${L[2]}</b> ${L[4]}</p><div class="chipset">${L[5].map(x=>`<span>${x}</span>`).join("")}</div></div>`;
+  d.querySelector("button").addEventListener("click",()=>{
+    const open=d.classList.toggle("open");
+    d.querySelector("button").setAttribute("aria-expanded",open);
+  });
+  ll.appendChild(d);
+});
+ll.children[1].classList.add("open");
+ll.children[1].querySelector("button").setAttribute("aria-expanded","true");
+
+/* ---------------- ROI calculator ---------------- */
+const $=id=>document.getElementById(id);
+function fmt(n){return n.toLocaleString("en-GB",{maximumFractionDigits:0})}
+function roi(){
+  const c=+$("rCarers").value,m=+$("rMins").value,d=+$("rDays").value,r=+$("rRate").value;
+  $("vCarers").textContent=c;$("vMins").textContent=m;$("vDays").textContent=d;$("vRate").textContent=r.toFixed(2);
+  const daily=c*m/60, yearly=daily*d;
+  $("oDaily").textContent=fmt(daily)+" h";
+  $("oHours").textContent="≈ "+fmt(yearly);
+  $("oFTE").textContent=(yearly/1650).toFixed(1)+" FTE";
+  $("oValue").textContent="£"+fmt(yearly*r);
+}
+["rCarers","rMins","rDays","rRate"].forEach(id=>$(id).addEventListener("input",roi));
+roi();
+
+/* ---------------- Bars on scroll ---------------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.querySelectorAll(".bar-fill").forEach(f=>f.style.width=f.dataset.w*2.2+"%");io.unobserve(e.target)}
+}),{threshold:.3});
+io.observe(document.querySelector(".bars"));
+
+/* ---------------- Scrollspy ---------------- */
+const links=[...document.querySelectorAll("#topnav a.navlink")];
+const secs=links.map(a=>document.querySelector(a.getAttribute("href")));
+const spy=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));
+    }
+  });
+},{rootMargin:"-40% 0px -55% 0px"});
+secs.forEach(s=>s&&spy.observe(s));
+</script>
+</body>
+</html>

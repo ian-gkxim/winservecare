@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+  /* Hide navigation sidebar and non-printable elements */
+  nav,
+  aside,
+  .print-hide {
+    display: none !important;
+  }
+
+  /* Make main content full-width */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Remove flex layout constraints */
+  body,
+  #root,
+  #root > div {
+    display: block !important;
+    min-height: auto !important;
+  }
+
+  /* Clean print styling for report content */
+  .print-content {
+    padding: 0 !important;
+  }
+
+  .print-content table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .print-content th,
+  .print-content td {
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+  }
+}
