@@ -1,3 +1,4 @@
+import type { SolverProgressState } from '../hooks/useOptimisation';
 
 export interface ProgressPanelProps {
   currentStep: number;
@@ -5,6 +6,7 @@ export interface ProgressPanelProps {
   score: number;
   isRunning: boolean;
   error?: { step: number; message: string } | null;
+  solverProgress?: SolverProgressState;
 }
 
 const TOTAL_STEPS = 8;
@@ -15,6 +17,7 @@ export function ProgressPanel({
   score,
   isRunning,
   error,
+  solverProgress,
 }: ProgressPanelProps) {
   if (error) {
     return (
@@ -37,6 +40,9 @@ export function ProgressPanel({
     );
   }
 
+  // Show fine-grained solver progress when available and running
+  const showSolverProgress = isRunning && solverProgress && solverProgress.phase !== 'idle';
+
   return (
     <div
       className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
@@ -47,6 +53,61 @@ export function ProgressPanel({
       <h3 className="text-sm font-semibold text-gray-700 mb-3">
         Optimisation Progress
       </h3>
+
+      {/* Fine-grained solver progress */}
+      {showSolverProgress && solverProgress.phase === 'distance_matrix' && (
+        <div className="mb-4 rounded-md bg-amber-50 border border-amber-200 px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-amber-700 uppercase tracking-wide">
+              Fetching Travel Times
+            </span>
+            <span className="text-xs text-amber-600">
+              {solverProgress.elapsedSeconds}s elapsed
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-amber-100">
+            <div
+              className="h-1.5 rounded-full bg-amber-500 animate-pulse"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <p className="text-xs text-amber-600 mt-1">
+            Computing {solverProgress.totalPairs} route pairs from Google Maps...
+          </p>
+        </div>
+      )}
+
+      {showSolverProgress && solverProgress.phase === 'solver' && (
+        <div className="mb-4 rounded-md bg-blue-50 border border-blue-200 px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-blue-700 uppercase tracking-wide">
+              Solver Running
+            </span>
+            <span className="text-xs text-blue-600">
+              {solverProgress.elapsedSeconds}s / {solverProgress.timeLimitSeconds}s
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-blue-100">
+            <div
+              className="h-1.5 rounded-full bg-blue-500 transition-all duration-1000"
+              style={{ width: `${solverProgress.percentageComplete}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-xs text-blue-600">
+              {solverProgress.solutionsFound} solution{solverProgress.solutionsFound !== 1 ? 's' : ''} found
+            </span>
+            <span className="text-xs font-medium text-blue-700">
+              {solverProgress.percentageComplete}%
+            </span>
+          </div>
+          {solverProgress.currentBestScore !== null && (
+            <p className="text-xs text-blue-600 mt-1">
+              Best score: {solverProgress.currentBestScore.toFixed(2)}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Step info */}
       <div className="flex items-center justify-between mb-2">

@@ -293,11 +293,33 @@ export interface WsErrorMessage {
   message: string;
 }
 
+export interface WsSolverProgressMessage {
+  type: 'solver_progress';
+  phase: 'distance_matrix' | 'solver';
+  elapsed_seconds: number;
+  // Solver phase fields
+  time_limit_seconds?: number;
+  percentage_complete?: number;
+  solutions_found?: number;
+  current_best_score?: number | null;
+  // Distance matrix phase fields
+  total_pairs?: number;
+  pairs_completed?: number;
+  status?: 'in_progress' | 'complete' | 'failed';
+}
+
+export interface WsDeprecationMessage {
+  type: 'deprecation_notice';
+  message: string;
+}
+
 export type WsServerMessage =
   | WsStepMessage
   | WsProgressMessage
   | WsCompleteMessage
-  | WsErrorMessage;
+  | WsErrorMessage
+  | WsSolverProgressMessage
+  | WsDeprecationMessage;
 
 // Optimisation result types
 

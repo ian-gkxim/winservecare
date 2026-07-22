@@ -7,6 +7,17 @@ import type {
 } from '../types';
 import type { ConnectionState } from './useWebSocket';
 
+export interface SolverProgressState {
+  phase: 'idle' | 'distance_matrix' | 'solver';
+  elapsedSeconds: number;
+  timeLimitSeconds: number;
+  percentageComplete: number;
+  solutionsFound: number;
+  currentBestScore: number | null;
+  distanceMatrixStatus: 'idle' | 'in_progress' | 'complete' | 'failed';
+  totalPairs: number;
+}
+
 export interface OptimisationState {
   isRunning: boolean;
   isPaused: boolean;
@@ -16,6 +27,7 @@ export interface OptimisationState {
   result: { finalScore: number; routes: Route[] } | null;
   error: { step: number; message: string } | null;
   connectionState: ConnectionState;
+  solverProgress: SolverProgressState;
 }
 
 export interface UseOptimisationReturn extends OptimisationState {
@@ -33,6 +45,16 @@ export function useOptimisation(): UseOptimisationReturn {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<{ finalScore: number; routes: Route[] } | null>(null);
   const [error, setError] = useState<{ step: number; message: string } | null>(null);
+  const [solverProgress, setSolverProgress] = useState<SolverProgressState>({
+    phase: 'idle',
+    elapsedSeconds: 0,
+    timeLimitSeconds: 10,
+    percentageComplete: 0,
+    solutionsFound: 0,
+    currentBestScore: null,
+    distanceMatrixStatus: 'idle',
+    totalPairs: 0,
+  });
 
   const handleMessage = useCallback((data: unknown) => {
     const message = data as WsServerMessage;
@@ -47,16 +69,44 @@ export function useOptimisation(): UseOptimisationReturn {
         setProgress(message.score);
         break;
 
+      case 'solver_progress':
+        if (message.phase === 'distance_matrix') {
+          setSolverProgress((prev) => ({
+            ...prev,
+            phase: 'distance_matrix',
+            elapsedSeconds: message.elapsed_seconds,
+            totalPairs: message.total_pairs ?? prev.totalPairs,
+            distanceMatrixStatus: message.status ?? 'in_progress',
+          }));
+        } else if (message.phase === 'solver') {
+          setSolverProgress((prev) => ({
+            ...prev,
+            phase: 'solver',
+            elapsedSeconds: message.elapsed_seconds,
+            timeLimitSeconds: message.time_limit_seconds ?? prev.timeLimitSeconds,
+            percentageComplete: message.percentage_complete ?? prev.percentageComplete,
+            solutionsFound: message.solutions_found ?? prev.solutionsFound,
+            currentBestScore: message.current_best_score ?? prev.currentBestScore,
+          }));
+        }
+        break;
+
       case 'complete':
         setResult({ finalScore: message.finalScore, routes: message.routes });
+        setSolverProgress((prev) => ({ ...prev, phase: 'idle', percentageComplete: 100 }));
         setIsRunning(false);
         setIsPaused(false);
         break;
 
       case 'error':
         setError({ step: message.step, message: message.message });
+        setSolverProgress((prev) => ({ ...prev, phase: 'idle' }));
         setIsRunning(false);
         setIsPaused(false);
+        break;
+
+      case 'deprecation_notice':
+        // Silently acknowledge — no UI action needed
         break;
     }
   }, []);
@@ -76,6 +126,16 @@ export function useOptimisation(): UseOptimisationReturn {
       setProgress(0);
       setResult(null);
       setError(null);
+      setSolverProgress({
+        phase: 'idle',
+        elapsedSeconds: 0,
+        timeLimitSeconds: 10,
+        percentageComplete: 0,
+        solutionsFound: 0,
+        currentBestScore: null,
+        distanceMatrixStatus: 'idle',
+        totalPairs: 0,
+      });
 
       // Connect and send start message
       connect();
@@ -111,6 +171,7 @@ export function useOptimisation(): UseOptimisationReturn {
       result,
       error,
       connectionState,
+      solverProgress,
       startOptimisation,
       pause,
       resume,
@@ -125,6 +186,7 @@ export function useOptimisation(): UseOptimisationReturn {
       result,
       error,
       connectionState,
+      solverProgress,
       startOptimisation,
       pause,
       resume,

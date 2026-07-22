@@ -51,6 +51,7 @@ export default function DashboardPage() {
     progress,
     result,
     error,
+    solverProgress,
     startOptimisation,
     pause,
     resume,
@@ -250,6 +251,7 @@ export default function DashboardPage() {
             score={progress}
             isRunning={isRunning}
             error={error}
+            solverProgress={solverProgress}
           />
         </div>
       </div>
