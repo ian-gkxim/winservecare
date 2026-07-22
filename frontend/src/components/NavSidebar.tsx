@@ -9,15 +9,16 @@ const navItems = [
   { to: '/exceptions', label: 'Exceptions', icon: '⚠️' },
   { to: '/reports', label: 'Reports', icon: '📈' },
   { to: '/scenarios', label: 'Scenarios', icon: '🔀' },
+  { to: '/journey-sandbox', label: 'Journey Sandbox', icon: '🧪' },
   { to: '/config', label: 'Configuration', icon: '🔧' },
 ];
 
 export default function NavSidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 text-white flex flex-col">
-      <div className="p-4 border-b border-gray-700">
+    <aside className="w-64 min-h-screen bg-brand-ink text-brand-cloud flex flex-col">
+      <div className="p-4 border-b border-brand-mist">
         <h1 className="text-lg font-bold">WinServe Care</h1>
-        <p className="text-xs text-gray-400">AI Operations Optimiser</p>
+        <p className="text-xs text-brand-mist/70">AI Operations Optimiser</p>
       </div>
       <nav className="flex-1 py-4" aria-label="Main navigation">
         <ul className="space-y-1">
@@ -29,8 +30,8 @@ export default function NavSidebar() {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-2 text-sm rounded-md mx-2 transition-colors ${
                     isActive
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                      ? 'bg-brand-primary text-brand-cloud'
+                      : 'text-brand-mist/70 hover:bg-brand-ink/80 hover:text-brand-cloud'
                   }`
                 }
               >

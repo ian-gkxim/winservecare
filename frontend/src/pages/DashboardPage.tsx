@@ -171,7 +171,7 @@ export default function DashboardPage() {
         <div className="flex items-end justify-between gap-4">
           <div className="flex items-end gap-4">
             <div>
-              <label htmlFor="dashboard-target-date" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="dashboard-target-date" className="block text-sm font-medium text-brand-ink mb-1">
                 Target Date
               </label>
               <input
@@ -180,15 +180,15 @@ export default function DashboardPage() {
                 value={targetDate}
                 min={getTodayString()}
                 onChange={handleDateChange}
-                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-brand-mist rounded-md shadow-sm focus:outline-none"
               />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Optimisation Dashboard</h1>
+            <h1 className="text-2xl font-bold text-brand-ink">Optimisation Dashboard</h1>
           </div>
           <button
             onClick={handleRunOptimisation}
             disabled={isRunning || scheduledCount === 0}
-            className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            className="rounded-lg bg-brand-primary px-6 py-3 text-sm font-semibold text-brand-cloud shadow-sm hover:bg-brand-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
             aria-label="Run optimisation"
           >
             {isRunning ? 'Optimising...' : 'Run Optimisation'}
@@ -219,7 +219,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Map column (2/3 width) */}
         <div className="lg:col-span-2 flex flex-col gap-4">
-          <div className="h-[480px] rounded-lg border border-gray-200 overflow-hidden">
+          <div className="h-[480px] rounded-lg border border-brand-mist overflow-hidden">
             <AnimatedMap
               steps={steps}
               isRunning={isRunning}

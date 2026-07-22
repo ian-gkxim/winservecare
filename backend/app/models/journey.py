@@ -191,3 +191,33 @@ class ErrorResponse(BaseModel):
     error: str  # Machine-readable error code
     message: str  # Human-readable description
     details: dict = {}  # Additional context
+
+
+class FeedbackRating(str, Enum):
+    """Route quality feedback rating."""
+
+    THUMBS_UP = "thumbs_up"
+    NEUTRAL = "neutral"
+    THUMBS_DOWN = "thumbs_down"
+
+
+class JourneyFeedbackCreate(BaseModel):
+    """Payload for submitting route feedback."""
+
+    journey_id: int
+    carer_id: int
+    rating: FeedbackRating
+    comment: Optional[str] = Field(None, max_length=300)
+    submitted_at: datetime
+
+
+class JourneyFeedbackModel(BaseModel):
+    """Full feedback record returned from API."""
+
+    id: int
+    journey_id: int
+    carer_id: int
+    rating: FeedbackRating
+    comment: Optional[str] = None
+    submitted_at: str
+    created_at: str

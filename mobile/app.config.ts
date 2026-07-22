@@ -6,13 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: "winservecare-mobile",
   version: "1.0.0",
   orientation: "portrait",
-  icon: "./assets/icon.png",
   userInterfaceStyle: "light",
-  splash: {
-    image: "./assets/splash.png",
-    resizeMode: "contain",
-    backgroundColor: "#ffffff",
-  },
   ios: {
     supportsTablet: false,
     bundleIdentifier: "com.winservecare.mobile",
@@ -28,7 +22,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: "./assets/adaptive-icon.png",
       backgroundColor: "#ffffff",
     },
     package: "com.winservecare.mobile",
@@ -53,14 +46,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           "WinServeCare needs your location to track visit progress.",
         isAndroidBackgroundLocationEnabled: true,
         isAndroidForegroundServiceEnabled: true,
-      },
-    ],
-    [
-      "expo-notifications",
-      {
-        icon: "./assets/notification-icon.png",
-        color: "#ffffff",
-        sounds: [],
       },
     ],
   ],

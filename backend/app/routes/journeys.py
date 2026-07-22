@@ -11,6 +11,8 @@ from backend.app.models.journey import (
     DaySummary,
     DeleteConfirmation,
     JourneyCreate,
+    JourneyFeedbackCreate,
+    JourneyFeedbackModel,
     JourneyFilters,
     JourneyModel,
     JourneyPlanModel,
@@ -242,3 +244,25 @@ async def query_journeys(
     )
 
     return await service.query_journeys(filters, page, page_size)
+
+
+# --- Journey Feedback routes ---
+
+from backend.app.services.feedback_service import FeedbackService
+
+feedback_service = FeedbackService()
+
+
+@router.post("/api/journey-feedback", response_model=JourneyFeedbackModel, status_code=201)
+async def submit_journey_feedback(data: JourneyFeedbackCreate) -> JourneyFeedbackModel:
+    """Submit route quality feedback for a completed journey."""
+    return await feedback_service.submit_feedback(data)
+
+
+@router.get("/api/journey-feedback/{journey_id}", response_model=JourneyFeedbackModel)
+async def get_journey_feedback(journey_id: int) -> JourneyFeedbackModel:
+    """Retrieve feedback for a specific journey."""
+    result = await feedback_service.get_feedback(journey_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"No feedback found for journey {journey_id}")
+    return result

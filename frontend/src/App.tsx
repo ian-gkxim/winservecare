@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import NavSidebar from './components/NavSidebar';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -12,6 +12,8 @@ import ReportsPage from './pages/ReportsPage';
 import ScenariosPage from './pages/ScenariosPage';
 import ConfigPage from './pages/ConfigPage';
 import VisitsPage from './pages/VisitsPage';
+
+const JourneySandboxPage = lazy(() => import('./pages/JourneySandboxPage'));
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -35,6 +37,14 @@ function App() {
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/scenarios" element={<ScenariosPage />} />
             <Route path="/config" element={<ConfigPage />} />
+            <Route
+              path="/journey-sandbox"
+              element={
+                <Suspense fallback={<div className="p-6 text-gray-500">Loading...</div>}>
+                  <JourneySandboxPage />
+                </Suspense>
+              }
+            />
           </Routes>
         </ErrorBoundary>
       </main>

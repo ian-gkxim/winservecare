@@ -325,3 +325,19 @@ CREATE TABLE IF NOT EXISTS optimisation_jobs (
 
 CREATE INDEX IF NOT EXISTS idx_optimisation_jobs_status ON optimisation_jobs(status);
 CREATE INDEX IF NOT EXISTS idx_optimisation_jobs_created_at ON optimisation_jobs(created_at);
+
+-- Journey feedback table
+
+CREATE TABLE IF NOT EXISTS journey_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    journey_id INTEGER NOT NULL REFERENCES journeys(id),
+    carer_id INTEGER NOT NULL REFERENCES carers(id),
+    rating TEXT NOT NULL CHECK(rating IN ('thumbs_up', 'neutral', 'thumbs_down')),
+    comment TEXT,
+    submitted_at TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(journey_id, carer_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_journey_feedback_journey ON journey_feedback(journey_id);
+CREATE INDEX IF NOT EXISTS idx_journey_feedback_carer ON journey_feedback(carer_id);

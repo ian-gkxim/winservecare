@@ -20,6 +20,14 @@ import type {
   ConfigUpdate,
 } from '../types';
 import type { CareContract, CareContractCreate } from '../types/contracts';
+import type {
+  JourneyFeedbackCreate,
+  JourneyFeedback,
+  JourneyPlanCreate,
+  JourneyUpdate,
+  ActualJourneyCreate,
+  JourneyQueryParams,
+} from '../types/sandbox';
 
 const api = axios.create({
   baseURL: '/ainative/api',
@@ -143,5 +151,49 @@ export const savePatientContract = (patientId: number, data: CareContractCreate)
   api.put<CareContract>(`/patients/${patientId}/contract`, data).then((r) => r.data);
 export const deletePatientContract = (patientId: number) =>
   api.delete(`/patients/${patientId}/contract`);
+
+// Journey Feedback
+export const submitJourneyFeedback = (data: JourneyFeedbackCreate) =>
+  api.post<JourneyFeedback>('/journey-feedback', data).then((r) => r.data);
+
+export const getJourneyFeedback = (journeyId: number) =>
+  api.get<JourneyFeedback>(`/journey-feedback/${journeyId}`).then((r) => r.data);
+
+// Journey Plans
+export const createJourneyPlan = (data: JourneyPlanCreate) =>
+  api.post('/journey-plans', data).then((r) => r.data);
+
+export const listJourneyPlans = (params?: { operatingDay?: string; includeArchived?: boolean }) =>
+  api.get('/journey-plans', { params }).then((r) => r.data);
+
+export const getJourneyPlan = (planId: number) =>
+  api.get(`/journey-plans/${planId}`).then((r) => r.data);
+
+export const modifyJourney = (planId: number, journeyId: number, update: JourneyUpdate) =>
+  api.put(`/journey-plans/${planId}/journeys/${journeyId}`, update).then((r) => r.data);
+
+export const deleteJourneyPlan = (planId: number) =>
+  api.delete(`/journey-plans/${planId}`).then((r) => r.data);
+
+export const cancelJourney = (journeyId: number) =>
+  api.post(`/journeys/${journeyId}/cancel`).then((r) => r.data);
+
+// Actual Journeys
+export const submitActualJourney = (data: ActualJourneyCreate) =>
+  api.post('/actual-journeys', data).then((r) => r.data);
+
+// Comparison & History
+export const getJourneyComparison = (operatingDay: string, planVersion?: number) =>
+  api.get(`/journey-comparison/${operatingDay}`, { params: planVersion ? { plan_version: planVersion } : {} }).then((r) => r.data);
+
+export const getJourneyHistory = (operatingDay: string) =>
+  api.get(`/journey-history/${operatingDay}`).then((r) => r.data);
+
+export const getJourneyHistoryRange = (start: string, end: string) =>
+  api.get('/journey-history', { params: { start, end } }).then((r) => r.data);
+
+// Query
+export const queryJourneys = (params: JourneyQueryParams) =>
+  api.get('/journeys', { params }).then((r) => r.data);
 
 export default api;

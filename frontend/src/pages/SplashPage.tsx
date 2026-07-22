@@ -5,8 +5,7 @@ interface SplashPageProps {
 function SplashPage({ onEnter }: SplashPageProps) {
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-      style={{ backgroundColor: '#F6F1EA' }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-brand-sand"
     >
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-40 pointer-events-none">
@@ -72,14 +71,12 @@ function SplashPage({ onEnter }: SplashPageProps) {
 
         {/* Tagline */}
         <p
-          className="text-lg md:text-xl mb-2 font-medium"
-          style={{ color: '#0F2340', fontFamily: "'Fraunces', Georgia, serif" }}
+          className="text-lg md:text-xl mb-2 font-medium text-brand-ink font-display"
         >
           Personalised care, trusted support
         </p>
         <p
-          className="text-sm md:text-base mb-10"
-          style={{ color: '#1E5FAD', fontFamily: "'Inter', system-ui, sans-serif" }}
+          className="text-sm md:text-base mb-10 text-brand-primary font-body"
         >
           At home, where it matters most.
         </p>
@@ -87,11 +84,7 @@ function SplashPage({ onEnter }: SplashPageProps) {
         {/* Enter button */}
         <button
           onClick={onEnter}
-          className="px-8 py-3 rounded-xl text-white font-semibold text-base shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-          style={{
-            backgroundColor: '#1E5FAD',
-            fontFamily: "'Inter', system-ui, sans-serif",
-          }}
+          className="px-8 py-3 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl focus:outline-none bg-brand-primary text-brand-cloud font-body"
           aria-label="Enter scheduling application"
         >
           Enter Scheduling
@@ -99,8 +92,7 @@ function SplashPage({ onEnter }: SplashPageProps) {
 
         {/* Footer */}
         <p
-          className="mt-12 text-xs"
-          style={{ color: '#7FA894', fontFamily: "'Inter', system-ui, sans-serif" }}
+          className="mt-12 text-xs text-brand-sage font-body"
         >
           © Winserve Care Services Ltd
         </p>
